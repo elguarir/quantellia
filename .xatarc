@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://Mohamed-Elguarir-s-workspace-ag8fco.us-east-1.xata.sh/db/fluent-script",
+  "codegen": {
+    "output": "utils/xata.ts"
+  }
+}
