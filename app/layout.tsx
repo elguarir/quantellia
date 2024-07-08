@@ -7,36 +7,32 @@ import { ThemeProvider } from "@/components/theme-provider";
 import ClerkProvider from "@/components/clerk-provider";
 
 export const metadata: Metadata = {
-    title: "Echo Mind",
+   title: "Echo Mind",
 };
 
 export default function RootLayout({
-    children,
+   children,
 }: Readonly<{
-    children: React.ReactNode;
+   children: React.ReactNode;
 }>) {
-    return (
-        <html
-            lang="en"
-            data-rounded="large"
-            data-shade="900"
-            suppressHydrationWarning
-        >
-            <body
-                className={cn(
-                    GeistSans.className,
-                    GeistSans.variable,
-                    GeistMono.variable
-                )}
-            >
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="dark"
-                    enableSystem
-                >
-                    <ClerkProvider>{children}</ClerkProvider>
-                </ThemeProvider>
-            </body>
-        </html>
-    );
+   return (
+      <html
+         lang="en"
+         data-rounded="large"
+         data-shade="900"
+         suppressHydrationWarning
+      >
+         <body
+            className={cn(
+               GeistSans.className,
+               GeistSans.variable,
+               GeistMono.variable,
+            )}
+         >
+            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+               <ClerkProvider>{children}</ClerkProvider>
+            </ThemeProvider>
+         </body>
+      </html>
+   );
 }

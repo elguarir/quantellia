@@ -1,17 +1,17 @@
 {
-  "done": true,
-  "migration": {
-    "name": "mig_cq490lq8jjefqltkg4l0",
-    "operations": [
-      {
-        "sql": {
-          "up": "CREATE SCHEMA \"bb_00000000000000000000000000_000000\";"
-        }
-      }
-    ]
-  },
-  "migrationType": "pgroll",
-  "name": "mig_cq490lq8jjefqltkg4l0",
-  "schema": "public",
-  "startedAt": "2024-07-06T00:31:19.388985Z"
+   "done": true,
+   "migration": {
+      "name": "mig_cq490lq8jjefqltkg4l0",
+      "operations": [
+         {
+            "sql": {
+               "up": "CREATE SCHEMA \"bb_00000000000000000000000000_000000\";"
+            }
+         }
+      ]
+   },
+   "migrationType": "pgroll",
+   "name": "mig_cq490lq8jjefqltkg4l0",
+   "schema": "public",
+   "startedAt": "2024-07-06T00:31:19.388985Z"
 }

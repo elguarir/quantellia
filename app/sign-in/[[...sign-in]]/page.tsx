@@ -6,7 +6,7 @@ const SignInPage = () => {
    return (
       <div className="container flex min-h-dvh items-center justify-center py-8">
          <ClerkLoading>
-               <Loader />
+            <Loader />
          </ClerkLoading>
          <SignIn />
       </div>

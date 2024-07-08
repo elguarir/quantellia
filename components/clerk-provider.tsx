@@ -32,48 +32,48 @@ import { useEffect, type PropsWithChildren, useState } from "react";
 import { dark } from "@clerk/themes";
 
 export default function ClerkThemeProvider({ children }: PropsWithChildren) {
-    const { resolvedTheme, setTheme } = useTheme();
-    const [themeResolved, setThemeResolved] = useState(false);
+   const { resolvedTheme, setTheme } = useTheme();
+   const [themeResolved, setThemeResolved] = useState(false);
 
-    // Function to handle theme resolution
-    const resolveTheme = () => {
-        if (!themeResolved && resolvedTheme !== "system") {
-            setThemeResolved(true);
-        }
-    };
+   // Function to handle theme resolution
+   const resolveTheme = () => {
+      if (!themeResolved && resolvedTheme !== "system") {
+         setThemeResolved(true);
+      }
+   };
 
-    useEffect(() => {
-        resolveTheme();
-    }, [resolvedTheme]);
+   useEffect(() => {
+      resolveTheme();
+   }, [resolvedTheme]);
 
-    useEffect(() => {
-        if (themeResolved) {
-            setTheme(resolvedTheme || "");
-        }
-    }, [themeResolved, setTheme, resolvedTheme]);
+   useEffect(() => {
+      if (themeResolved) {
+         setTheme(resolvedTheme || "");
+      }
+   }, [themeResolved, setTheme, resolvedTheme]);
 
-    return (
-        <ClerkProvider
-            signInUrl="/sign-in"
-            signUpUrl="/sign-up"
-            afterSignOutUrl={"/"}
-            signInFallbackRedirectUrl={"/sign-in"}
-            signUpFallbackRedirectUrl={"/sign-up"}
-            appearance={{
-                baseTheme: resolvedTheme === "dark" ? dark : undefined,
-                variables: {
-                    colorPrimary: "#6366f1",
-                    colorTextOnPrimaryBackground: "#ffffff",
-                },
-                layout: {
-                    logoImageUrl:
-                        resolvedTheme === "dark"
-                            ? "/images/logo-icon-dark-transparent.png"
-                            : "/images/logo-icon-light-transparent.png",
-                },
-            }}
-        >
-            {children}
-        </ClerkProvider>
-    );
+   return (
+      <ClerkProvider
+         signInUrl="/sign-in"
+         signUpUrl="/sign-up"
+         afterSignOutUrl={"/"}
+         signInFallbackRedirectUrl={"/sign-in"}
+         signUpFallbackRedirectUrl={"/sign-up"}
+         appearance={{
+            baseTheme: resolvedTheme === "dark" ? dark : undefined,
+            variables: {
+               colorPrimary: "#6366f1",
+               colorTextOnPrimaryBackground: "#ffffff",
+            },
+            layout: {
+               logoImageUrl:
+                  resolvedTheme === "dark"
+                     ? "/images/logo-icon-dark-transparent.png"
+                     : "/images/logo-icon-light-transparent.png",
+            },
+         }}
+      >
+         {children}
+      </ClerkProvider>
+   );
 }

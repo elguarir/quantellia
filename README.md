@@ -2,10 +2,10 @@
 
 This is a Next.js starter project featuring:
 
-- **[Prisma](https://www.prisma.io/docs):** Prisma ORM is an open source Node.js and TypeScript ORM with a readable data model, automated migrations, type-safety, and auto-completion.
-- **[Xata](https://xata.io/docs):** Xata is a serverless data platform, built on PostgreSQL which provides a full-text and vector search engine, record-level file attachments, table-level aggregations and an optional ask endpoint to engage with with OpenAI's ChatGPT API.
-- **[Clerk](https://clerk.com/docs):** Clerk is a User Management Platform, offering a complete suite of embeddable UIs, flexible APIs, and admin dashboards to authenticate and manage your users.
-- **[Inngest](https://www.inngest.com/docs):** Inngest is an event-driven durable execution engine that enables you to run reliable code on any platform, including serverless.
+-  **[Prisma](https://www.prisma.io/docs):** Prisma ORM is an open source Node.js and TypeScript ORM with a readable data model, automated migrations, type-safety, and auto-completion.
+-  **[Xata](https://xata.io/docs):** Xata is a serverless data platform, built on PostgreSQL which provides a full-text and vector search engine, record-level file attachments, table-level aggregations and an optional ask endpoint to engage with with OpenAI's ChatGPT API.
+-  **[Clerk](https://clerk.com/docs):** Clerk is a User Management Platform, offering a complete suite of embeddable UIs, flexible APIs, and admin dashboards to authenticate and manage your users.
+-  **[Inngest](https://www.inngest.com/docs):** Inngest is an event-driven durable execution engine that enables you to run reliable code on any platform, including serverless.
 
 ## App overview
 
@@ -13,18 +13,18 @@ This is a Next.js starter project featuring:
 
 How the app works:
 
-- The app features sign in/sign out functionality using Clerk and the avatar of the currently logged user is shown in the top-right corner
-- A Clerk protected dashboard route, leading to the messaging UI after successful authentication
-- User's messages are sent to/read from Xata using Prisma ORM
-- Finally, an Inngest function is responsible for reliably generating an answer to the user's message using OpenAI
+-  The app features sign in/sign out functionality using Clerk and the avatar of the currently logged user is shown in the top-right corner
+-  A Clerk protected dashboard route, leading to the messaging UI after successful authentication
+-  User's messages are sent to/read from Xata using Prisma ORM
+-  Finally, an Inngest function is responsible for reliably generating an answer to the user's message using OpenAI
 
 ## Resources Get Started
 
-- [Get started with Next.js and Xata](https://xata.io/docs/getting-started/nextjs)
-- [Using Prisma with Xata's Postgres service](https://xata.io/blog/prisma-postgres-xata-integration)
-- [Setting up your Clerk account](https://clerk.com/docs/quickstarts/setup-clerk)
-- [Clerk Next.js Quick Start](https://clerk.com/docs/quickstarts/nextjs)
-- [Inngest Quick Start](https://www.inngest.com/docs/quick-start)
+-  [Get started with Next.js and Xata](https://xata.io/docs/getting-started/nextjs)
+-  [Using Prisma with Xata's Postgres service](https://xata.io/blog/prisma-postgres-xata-integration)
+-  [Setting up your Clerk account](https://clerk.com/docs/quickstarts/setup-clerk)
+-  [Clerk Next.js Quick Start](https://clerk.com/docs/quickstarts/nextjs)
+-  [Inngest Quick Start](https://www.inngest.com/docs/quick-start)
 
 ## Using this boilerplate
 
@@ -149,15 +149,15 @@ Open [http://localhost:8288](http://localhost:8288) with your browser to see the
 
 ## Helpful Resources
 
-- Blog post: [AI in production: Managing capacity with flow control](https://inngest.com/blog/ai-in-production-managing-capacity-with-flow-control)
-- Video: [Automate All of Your Customer Emails with AI in Next.js](https://www.youtube.com/watch?v=EoFI_Bmzb4g)
-- Blog post: [Semi-Autonomous AI Agents and Collaborative Multiplayer Asynchronous Workflows](https://inngest.com/blog/semi-autonomous-ai-agents)
-- Docs: Inngest for AI
-  - [Concurrency](https://inngest.com/docs/concurrency) - Concurrency controls the number of steps executing code at any one time. It works by creating multi-level virtual queues within each function, directly in code, without thinking about infrastructure.
-  - [Debouncing](https://inngest.com/docs/guides/debounce) - Debounce delays function execution until a series of events are no longer received. This is useful for preventing wasted work when a function might be triggered in quick succession.
-  - [Prioritization](https://inngest.com/docs/guides/priority) - Priority allows you to dynamically execute some runs ahead or behind others based on any data. This allows you to prioritize some jobs ahead of others without the need for a separate queue.
-  - [Rate limiting](https://inngest.com/docs/guides/rate-limiting) - Rate limiting is a hard limit on how many function runs can start within a time period. Events that exceed the rate limit are skipped and do not trigger functions to start. This prevents excessive function runs over a given time period.
-  - [Steps](https://www.inngest.com/docs/learn/inngest-steps) - Steps are fundamental building blocks in Inngest functions. Each step represents individual task (or other unit of work) within a function that can be executed independently.
-  - [Throttling](https://inngest.com/docs/guides/throttling) - Throttling allows you to specify how many function runs can start within a time period. When the limit is reached, new function runs over the throttling limit will be enqueued for the future.
-- Docs: [Prisma ORM](https://www.prisma.io/docs/orm)
-- Resource: [Clerk Hackathon resources](https://www.notion.so/clerkdev/Clerk-Hackathon-Resources-1993bf4a3b3841fb91b01b209b9258d1)
+-  Blog post: [AI in production: Managing capacity with flow control](https://inngest.com/blog/ai-in-production-managing-capacity-with-flow-control)
+-  Video: [Automate All of Your Customer Emails with AI in Next.js](https://www.youtube.com/watch?v=EoFI_Bmzb4g)
+-  Blog post: [Semi-Autonomous AI Agents and Collaborative Multiplayer Asynchronous Workflows](https://inngest.com/blog/semi-autonomous-ai-agents)
+-  Docs: Inngest for AI
+   -  [Concurrency](https://inngest.com/docs/concurrency) - Concurrency controls the number of steps executing code at any one time. It works by creating multi-level virtual queues within each function, directly in code, without thinking about infrastructure.
+   -  [Debouncing](https://inngest.com/docs/guides/debounce) - Debounce delays function execution until a series of events are no longer received. This is useful for preventing wasted work when a function might be triggered in quick succession.
+   -  [Prioritization](https://inngest.com/docs/guides/priority) - Priority allows you to dynamically execute some runs ahead or behind others based on any data. This allows you to prioritize some jobs ahead of others without the need for a separate queue.
+   -  [Rate limiting](https://inngest.com/docs/guides/rate-limiting) - Rate limiting is a hard limit on how many function runs can start within a time period. Events that exceed the rate limit are skipped and do not trigger functions to start. This prevents excessive function runs over a given time period.
+   -  [Steps](https://www.inngest.com/docs/learn/inngest-steps) - Steps are fundamental building blocks in Inngest functions. Each step represents individual task (or other unit of work) within a function that can be executed independently.
+   -  [Throttling](https://inngest.com/docs/guides/throttling) - Throttling allows you to specify how many function runs can start within a time period. When the limit is reached, new function runs over the throttling limit will be enqueued for the future.
+-  Docs: [Prisma ORM](https://www.prisma.io/docs/orm)
+-  Resource: [Clerk Hackathon resources](https://www.notion.so/clerkdev/Clerk-Hackathon-Resources-1993bf4a3b3841fb91b01b209b9258d1)

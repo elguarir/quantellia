@@ -1,9 +1,14 @@
-import React from 'react'
+import { StackedCards } from "./_components/overview";
+import PageWrapper from "./_components/page-wrapper";
 
 const DashboardPage = () => {
-  return (
-    <div>DashboardPage</div>
-  )
-}
+   return (
+      <PageWrapper title="Dashboard">
+         <div className="space-y-6 p-6">
+            <StackedCards />
+         </div>
+      </PageWrapper>
+   );
+};
 
-export default DashboardPage
+export default DashboardPage;

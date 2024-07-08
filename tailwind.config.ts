@@ -125,10 +125,16 @@ const config = {
                "0%,100%": { transform: "scaleY(0.4)" },
                "50%": { transform: "scaleY(1)" },
             },
+            "spinner-spin": {
+               "0%": { transform: "rotate(0deg)" },
+               to: { transform: "rotate(1turn)" },
+            },
          },
          animation: {
             "accordion-down": "accordion-down 0.2s ease-out",
             "accordion-up": "accordion-up 0.2s ease-out",
+            "spinner-ease-spin": "spinner-spin .8s ease-in-out infinite",
+            "spinner-linear-spin": "spinner-spin .8s linear infinite",
             "caret-blink": "caret-blink 1.25s ease-out infinite",
             "spin-slow": "spin 3s linear infinite",
             "spin-fast": "spin 0.5s linear infinite",
