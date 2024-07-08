@@ -1,76 +1,230 @@
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind components;
+@tailwind utilities;
 
-  @layer base {
-    :root {
-      --background: 0 0% 100%;
-      --foreground: 0 0% 3.9%;
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
 
-      --card: 0 0% 100%;
-      --card-foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
 
-      --popover: 0 0% 100%;
-      --popover-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
 
-      --primary: 0 0% 9%;
-      --primary-foreground: 0 0% 98%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
 
-      --secondary: 0 0% 96.1%;
-      --secondary-foreground: 0 0% 9%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
 
-      --muted: 0 0% 96.1%;
-      --muted-foreground: 0 0% 45.1%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
 
-      --accent: 0 0% 96.1%;
-      --accent-foreground: 0 0% 9%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
 
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
 
-      --border: 0 0% 89.8%;
-      --input: 0 0% 89.8%;
-      --ring: 0 0% 3.9%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
 
-      --radius: 0.5rem;
-    }
 
-    .dark {
-      --background: 0 0% 3.9%;
-      --foreground: 0 0% 98%;
+    --radius: 0.5rem;
+    /* tailus */
+    --ui-border-color: theme(colors.gray.200);
+    --ui-bg: theme(colors.white/var(--ui-bg-opacity));
+    --ui-soft-bg: theme(colors.gray.100);
+    --input-bg: theme(colors.gray.200);
+    --ui-bg-opacity: 1;
+    --overlay-bg: theme(colors.gray.950/0.25);
 
-      --card: 0 0% 3.9%;
-      --card-foreground: 0 0% 98%;
-
-      --popover: 0 0% 3.9%;
-      --popover-foreground: 0 0% 98%;
-
-      --primary: 0 0% 98%;
-      --primary-foreground: 0 0% 9%;
-
-      --secondary: 0 0% 14.9%;
-      --secondary-foreground: 0 0% 98%;
-
-      --muted: 0 0% 14.9%;
-      --muted-foreground: 0 0% 63.9%;
-
-      --accent: 0 0% 14.9%;
-      --accent-foreground: 0 0% 98%;
-
-      --destructive: 0 62.8% 30.6%;
-      --destructive-foreground: 0 0% 98%;
-
-      --border: 0 0% 14.9%;
-      --input: 0 0% 14.9%;
-      --ring: 0 0% 83.1%;
-    }
+    --display-text-color: theme(colors.gray.950);
+    --title-text-color: var(--display-text-color);
+    --caption-text-color: theme(colors.gray.500);
+    --body-text-color: theme(colors.gray.700);
+    --placeholder-text-color: theme(colors.gray.400);
   }
 
-  @layer base {
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-background text-foreground;
-    }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+
+    /* tailus ui */
+    /* --display-text-color: theme(colors.white);
+    --title-text-color: var(--display-text-color);
+    --caption-text-color: theme(colors.gray.500);
+    --body-text-color: theme(colors.gray.300);
+    --placeholder-text-color: theme(colors.gray.600); */
+
+    --ui-border-color: theme(colors.gray.700);
+    --ui-bg: theme(colors.gray.900/var(--ui-bg-opacity));
+    --ui-soft-bg: theme(colors.gray.800);
+    --input-bg: theme(colors.gray.700);
+    --ui-bg-opacity: 1;
+    --overlay-bg: theme(colors.black/0.5);
+
+    --display-text-color: theme(colors.gray.100);
+    --title-text-color: var(--display-text-color);
+    --caption-text-color: theme(colors.gray.400);
+    --body-text-color: theme(colors.gray.300);
+    --placeholder-text-color: theme(colors.gray.500);
+
+
   }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    scrollbar-width: thin;
+  }
+
+  body {
+    @apply bg-[--ui-bg] text-[--display-text-color] scroll-smooth antialiased;
+  }
+
+  /* 
+    remove input autofill blueish background color
+  */
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus {
+    transition:
+      background-color 600000s 0s,
+      color 600000s 0s;
+  }
+
+  input[data-autocompleted] {
+    background-color: transparent !important;
+  }
+
+  input:-webkit-autofill {
+    -webkit-animation-delay: 1s;
+    /* Safari support - any positive time runs instantly */
+    -webkit-animation-name: autofill;
+    -webkit-animation-fill-mode: both;
+  }
+
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 5px
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted));
+    border-radius: 25px;
+    border: 3px solid transparent
+  }
+
+  /* 
+    scrollbar color
+  */
+  * {
+    scrollbar-color: #d4d4d8 transparent
+  }
+
+  *,
+  .dark {
+    scrollbar-width: thin
+  }
+
+  .dark {
+    scrollbar-color: #41414f transparent;
+    /* #3f3f46 */
+  }
+
+}
+
+/* 
+  remove the outline animation somehow it's sluggish
+*/
+.transition-\[outline\] {
+  transition-duration: 0ms;
+}
+
+.line-wabble-loader {
+  --uib-size: 80px;
+  --uib-color: currentColor;
+  --uib-speed: 1.75s;
+  --uib-stroke: 4px;
+  --uib-bg-opacity: .1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--uib-stroke);
+  width: var(--uib-size);
+  border-radius: calc(var(--uib-stroke) / 2);
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.line-wabble-loader::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: var(--uib-color);
+  opacity: var(--uib-bg-opacity);
+  transition: background-color 0.3s ease;
+}
+
+.line-wabble-loader::after {
+  content: '';
+  height: 100%;
+  width: 100%;
+  border-radius: calc(var(--uib-stroke) / 2);
+  animation: wobble var(--uib-speed) ease-in-out infinite;
+  transform: translateX(-95%);
+  background-color: var(--uib-color);
+  transition: background-color 0.3s ease;
+}
+
+@keyframes wobble {
+
+  0%,
+  100% {
+    transform: translateX(-95%);
+  }
+
+  50% {
+    transform: translateX(95%);
+  }
+}

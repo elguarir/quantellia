@@ -1,0 +1,9 @@
+{
+    "plugins": [
+        "prettier-plugin-tailwindcss"
+    ],
+    "tabWidth": 3,
+    "tailwindFunctions": [
+        "tv"
+    ]
+}
