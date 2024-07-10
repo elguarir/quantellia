@@ -2,7 +2,6 @@ import axios from "axios";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import TurndownService from "turndown";
-import fetchMetaData from "meta-fetcher";
 
 export const getIdFromVideoLink = (link: string) => {
    let regex =
@@ -23,6 +22,7 @@ interface getYoutubeVideResponse {
    views: number | null;
    url: string;
 }
+
 export async function getYoutubeVideo(
    id: string,
 ): Promise<getYoutubeVideResponse> {
@@ -85,7 +85,7 @@ interface parseWebPageResponse {
    /**
     * The favicons of the web page.
     */
-   favicons: string[];
+   favicon: string;
 
    /**
     * The content of the web page.
@@ -105,15 +105,21 @@ export const parseWebPage = async (url: URL): Promise<parseWebPageResponse> => {
       headingStyle: "atx",
    });
    let content = turndownService.turndown(html);
-   let webpage = await fetchMetaData(url.toString());
+
+   const { data } = await axios.get(
+      `https://metatags.io/api/hello?url=${url.toString()}`,
+   );
+
+   const title = data.title as string;
+   const description = data.description as string;
+   const banner = data.image as string;
+   const favicon = data.favicon as string;
 
    return {
-      title: webpage.metadata.title,
-      description: webpage.metadata.description ?? null,
-      banner: webpage.metadata.banner ?? null,
-      favicons: webpage.favicons.map((favicon) =>
-         favicon.replace(url.toString(), url.origin + "/"),
-      ),
+      title,
+      description,
+      banner,
+      favicon,
       content,
    };
 };
