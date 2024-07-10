@@ -6,7 +6,7 @@ import {
    type ButtonProps as ButtonVariantsProps,
    type ButtonIconProps,
 } from "@tailus/themer";
-
+import NextLink from "next/link";
 export type Root = typeof Root;
 export type Icon = typeof Icon;
 export type Label = typeof Label;
@@ -66,7 +66,7 @@ export const Root = React.forwardRef<
       },
       forwardedRef,
    ) => {
-      const Component = href ? "a" : "button";
+      const Component = href ? NextLink : "button";
       const iconOnly = React.Children.toArray(children).some(
          (child) =>
             React.isValidElement(child) &&
@@ -78,7 +78,7 @@ export const Root = React.forwardRef<
       return (
          <Component
             ref={forwardedRef}
-            href={href}
+            href={href ?? "#"}
             className={button[variant as keyof typeof button]({
                intent,
                [buttonSize]: size,

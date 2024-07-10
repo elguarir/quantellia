@@ -2,6 +2,7 @@ import { Button } from "@/tailus-ui/button";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
+
 export const Link = ({
    isActive = false,
    label,

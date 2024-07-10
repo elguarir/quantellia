@@ -5,7 +5,7 @@ import { useSidebar } from "@/hooks/use-sidebar";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import React from "react";
-import { Notifications } from "./notifications";
+import { Notifications } from "../app/dashboard/_components/notifications";
 
 interface Props {
    children?: React.ReactNode;
@@ -22,7 +22,7 @@ const PageWrapper = ({ title, children }: Props) => {
             isOpen && "translate-x-72 lg:translate-x-0",
          )}
       >
-         <div className="feedback-bg sticky top-0 z-10 flex items-center justify-between border-b px-6 py-3 lg:rounded-t-[--card-radius] lg:py-4">
+         <div className="feedback-bg sticky top-0 z-10 flex items-center justify-between border-b px-6 py-3 lg:rounded-t-[--card-radius] lg:py-2">
             <div className="flex items-center gap-2">
                <Button.Root
                   size="sm"

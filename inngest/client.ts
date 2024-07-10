@@ -1,4 +1,4 @@
-import { Inngest, InngestMiddleware } from "inngest";
+import { EventSchemas, Inngest, InngestMiddleware } from "inngest";
 import { db } from "@/lib/db";
 
 // make Prisma available in the Inngest functions
@@ -22,8 +22,20 @@ const prismaMiddleware = new InngestMiddleware({
    },
 });
 
+type TranscriptStarted = {
+   data: {
+      requestId: string;
+   };
+};
+ 
+
+type Events = {
+   "transcription/new.started": TranscriptStarted;
+};
+
 // Create a client to send and receive events
 export const inngest = new Inngest({
    id: "fluent-script",
    middleware: [prismaMiddleware],
+   schemas: new EventSchemas().fromRecord<Events>(),
 });

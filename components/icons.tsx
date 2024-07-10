@@ -42,3 +42,79 @@ export const SettingsIcon = (props: Props) => (
       </g>
    </svg>
 );
+
+export const DocumentIcon = (props: Props) => (
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+      <g fill="none" stroke="currentColor" strokeWidth={1.5}>
+         <path d="M5 8c0-2.828 0-4.243.879-5.121C6.757 2 8.172 2 11 2h2c2.828 0 4.243 0 5.121.879C19 3.757 19 5.172 19 8v8c0 2.828 0 4.243-.879 5.121C17.243 22 15.828 22 13 22h-2c-2.828 0-4.243 0-5.121-.879C5 20.243 5 18.828 5 16zm0-3.924c-.975.096-1.631.313-2.121.803C2 5.757 2 7.172 2 10v4c0 2.828 0 4.243.879 5.121c.49.49 1.146.707 2.121.803M19 4.076c.975.096 1.631.313 2.121.803C22 5.757 22 7.172 22 10v4c0 2.828 0 4.243-.879 5.121c-.49.49-1.146.707-2.121.803"></path>
+         <path strokeLinecap="round" d="M9 13h6M9 9h6m-6 8h3"></path>
+      </g>
+   </svg>
+);
+
+export const FolderIcon = (props: Props) => (
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+      <path
+         fill="none"
+         stroke="currentColor"
+         strokeLinecap="round"
+         strokeWidth={1.7}
+         d="M18 10h-5m9 1.798c0-2.632 0-3.949-.77-4.804a2.984 2.984 0 0 0-.224-.225C20.151 6 18.834 6 16.202 6h-.374c-1.153 0-1.73 0-2.268-.153a4 4 0 0 1-.848-.352C12.224 5.224 11.816 4.815 11 4l-.55-.55c-.274-.274-.41-.41-.554-.53a4 4 0 0 0-2.18-.903C7.53 2 7.336 2 6.95 2c-.883 0-1.324 0-1.692.07A4 4 0 0 0 2.07 5.257C2 5.626 2 6.068 2 6.95M21.991 16c-.036 2.48-.22 3.885-1.163 4.828C19.657 22 17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.172C2 19.657 2 17.771 2 14v-3"
+      ></path>
+   </svg>
+);
+
+export const NoteBookIcon = (props: Props) => (
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+      <g fill="none" stroke="currentColor" strokeWidth={1.6}>
+         <path d="M3 8c0-2.828 0-4.243.879-5.121C4.757 2 6.172 2 9 2h6c2.828 0 4.243 0 5.121.879C21 3.757 21 5.172 21 8v8c0 2.828 0 4.243-.879 5.121C19.243 22 17.828 22 15 22H9c-2.828 0-4.243 0-5.121-.879C3 20.243 3 18.828 3 16z"></path>
+         <path
+            strokeLinecap="round"
+            d="M8 2.5V22M2 12h2m-2 4h2M2 8h2m7.5-1.5h5m-5 3.5h5"
+         ></path>
+      </g>
+   </svg>
+);
+
+export const HomeIcon = (props: Props) => (
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+      <g fill="none" stroke="currentColor" strokeWidth={1.7}>
+         <path d="M2.364 12.958c-.38-2.637-.57-3.956-.029-5.083c.54-1.127 1.691-1.813 3.992-3.183l1.385-.825C9.8 2.622 10.846 2 12 2c1.154 0 2.199.622 4.288 1.867l1.385.825c2.3 1.37 3.451 2.056 3.992 3.183c.54 1.127.35 2.446-.03 5.083l-.278 1.937c-.487 3.388-.731 5.081-1.906 6.093C18.276 22 16.553 22 13.106 22h-2.212c-3.447 0-5.17 0-6.345-1.012c-1.175-1.012-1.419-2.705-1.906-6.093z"></path>
+         <path strokeLinecap="round" d="M15 18H9"></path>
+      </g>
+   </svg>
+);
+
+export const YoutubeIcon = (props: Props) => (
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 180" {...props}>
+      <path
+         fill="#f00"
+         d="M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134"
+      ></path>
+      <path
+         fill="#fff"
+         d="m102.421 128.06l66.328-38.418l-66.328-38.418z"
+      ></path>
+   </svg>
+);
+
+export const BrowserIcon = (props: Props) => (
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" {...props}>
+      <rect
+         width={416}
+         height={384}
+         x={48}
+         y={64}
+         fill="none"
+         stroke="currentColor"
+         strokeLinejoin="round"
+         strokeWidth={32}
+         rx={48}
+         ry={48}
+      ></rect>
+      <path
+         fill="currentColor"
+         d="M397.82 64H114.18C77.69 64 48 94.15 48 131.2V176h16c0-16 16-32 32-32h320c16 0 32 16 32 32h16v-44.8c0-37.05-29.69-67.2-66.18-67.2"
+      ></path>
+   </svg>
+);

@@ -8,11 +8,40 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model messages {
-  text           String
-  author         String
-  xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
-  xata_id        String   @unique(map: "_pgroll_users_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+model User {
+  id            String         @id @default(uuid())
+  firstName     String?        @map("first_name")
+  lastName      String?        @map("last_name")
+  avatar        String
+  email         String         @unique
+  youtubeVideos YoutubeVideo[]
+
+  createdAt      DateTime @default(now()) @map("created_at")
   xata_version   Int      @default(0)
   xata_createdat DateTime @default(now()) @db.Timestamptz(6)
+  xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
+  xata_id        String   @unique(map: "users__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+
+  @@map("users")
+}
+
+model YoutubeVideo {
+  id      String @id @default(uuid())
+  userId  String @map("user_id")
+  channel String
+  title   String
+  length  Int
+  views   Int?
+  thumb   String
+  link    String
+  content String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime @default(now()) @map("created_at")
+  xata_id        String   @unique(map: "youtube_videos__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int      @default(0)
+  xata_createdat DateTime @default(now()) @db.Timestamptz(6)
+  xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("youtube_videos")
 }
