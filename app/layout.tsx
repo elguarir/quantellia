@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import ClerkProvider from "@/components/clerk-provider";
 
 export const metadata: Metadata = {
-   title: "Echo Mind",
+   title: "Quantellia",
 };
 
 export default function RootLayout({

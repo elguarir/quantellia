@@ -293,7 +293,7 @@ const ShowcaseImage: React.FC = () => (
                className="relative flex h-6 w-56 items-center justify-center gap-4 rounded-[--card-radius] bg-gray-200/50 px-3 text-xs text-[--caption-text-color] dark:bg-[--ui-bg]"
             >
                <Lock className="absolute left-3 size-2.5" />
-               echomind.com
+               quantellia.net
             </div>
             <Plus aria-hidden className="size-4 text-[--caption-text-color]" />
          </div>
