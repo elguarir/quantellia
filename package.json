@@ -11,7 +11,8 @@
     "db:push": "prisma db push",
     "xata:sync": "xata pull main --skip-code-generation && xata codegen --branch=main --output=lib/xata.ts",
     "db:sync": "prisma db pull",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@ai-sdk/google": "^0.0.25",
