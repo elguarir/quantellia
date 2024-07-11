@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_34dec0918a69fc",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE youtube_videos DROP status"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_34dec0918a69fc",
+  "parent": "sql_2ea6589e33f91b",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:11:51.669902Z"
+}

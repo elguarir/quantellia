@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_ca33e233527904",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX files_doc_id_key ON files USING btree (doc_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_ca33e233527904",
+  "parent": "sql_19517e8af60a42",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:11:52.426688Z"
+}

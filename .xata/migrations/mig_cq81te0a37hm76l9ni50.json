@@ -1,0 +1,78 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq81te0a37hm76l9ni50",
+    "operations": [
+      {
+        "set_replica_identity": {
+          "table": "transcripts",
+          "identity": {
+            "type": "full",
+            "index": ""
+          }
+        }
+      },
+      {
+        "add_column": {
+          "table": "transcripts",
+          "column": {
+            "name": "xata_id",
+            "type": "text",
+            "check": {
+              "name": "transcripts_xata_id_length_xata_id",
+              "constraint": "length(\"xata_id\") < 256"
+            },
+            "unique": true,
+            "default": "'rec_' || xata_private.xid()",
+            "nullable": false
+          }
+        }
+      },
+      {
+        "add_column": {
+          "table": "transcripts",
+          "column": {
+            "name": "xata_version",
+            "type": "integer",
+            "default": "0",
+            "nullable": false
+          }
+        }
+      },
+      {
+        "add_column": {
+          "table": "transcripts",
+          "column": {
+            "name": "xata_createdat",
+            "type": "timestamptz",
+            "default": "now()",
+            "nullable": false
+          }
+        }
+      },
+      {
+        "add_column": {
+          "up": "now()",
+          "table": "transcripts",
+          "column": {
+            "name": "xata_updatedat",
+            "type": "timestamptz",
+            "default": "now()",
+            "nullable": false
+          }
+        }
+      },
+      {
+        "sql": {
+          "up": "CREATE TRIGGER xata_maintain_metadata_trigger_pgroll\n  BEFORE INSERT OR UPDATE\n  ON \"transcripts\"\n  FOR EACH ROW\n  EXECUTE FUNCTION xata_private.maintain_metadata_trigger_pgroll()",
+          "onComplete": true
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq81te0a37hm76l9ni50",
+  "parent": "mig_cq81td8a37hm76l9ni40",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:04:41.394617Z"
+}

@@ -1,0 +1,27 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq82d5ga37hm76l9nidg",
+    "operations": [
+      {
+        "add_column": {
+          "up": "'{}'",
+          "table": "files",
+          "column": {
+            "pk": false,
+            "name": "file",
+            "type": "xata.xata_file",
+            "unique": false,
+            "comment": "{\"xata.file.dpa\":false}",
+            "nullable": false
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq82d5ga37hm76l9nidg",
+  "parent": "mig_cq82ce8a37hm76l9nicg",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:38:14.912203Z"
+}

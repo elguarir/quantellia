@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_b32412e62849a8",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE youtube_videos (id text NOT NULL, channel text NOT NULL, title text NOT NULL, description text, length int NOT NULL, views int, thumb text NOT NULL, link text NOT NULL, status \"ProcessingStatus\" NOT NULL DEFAULT 'PENDING', doc_id text NOT NULL, user_id text, CONSTRAINT youtube_videos_pkey PRIMARY KEY (id))"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_b32412e62849a8",
+  "parent": "sql_583976bde05594",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:04:24.686406Z"
+}

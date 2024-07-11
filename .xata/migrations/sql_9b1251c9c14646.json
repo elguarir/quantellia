@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_9b1251c9c14646",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE web_pages ALTER COLUMN id SET DEFAULT 'page_'::text || xata_private.xid()::text"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_9b1251c9c14646",
+  "parent": "sql_6fccb7a251d156",
+  "schema": "public",
+  "startedAt": "2024-07-11T20:31:29.181116Z"
+}

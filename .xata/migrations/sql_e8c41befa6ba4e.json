@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_e8c41befa6ba4e",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE youtube_videos DROP content, DROP summary"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_e8c41befa6ba4e",
+  "parent": "sql_7a1f8bd10d92bd",
+  "schema": "public",
+  "startedAt": "2024-07-11T02:47:08.435699Z"
+}

@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_806ba4446fddbe",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE files ADD CONSTRAINT files_doc_id_fkey FOREIGN KEY (doc_id) REFERENCES documents (id) ON UPDATE CASCADE ON DELETE CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_806ba4446fddbe",
+  "parent": "sql_ca33e233527904",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:11:52.610491Z"
+}

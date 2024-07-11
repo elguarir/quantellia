@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_0e34639445ad8d",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE youtube_videos ADD CONSTRAINT youtube_videos_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_0e34639445ad8d",
+  "parent": "sql_050b7809d645a3",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:04:26.899928Z"
+}

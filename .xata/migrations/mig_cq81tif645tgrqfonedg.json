@@ -1,0 +1,78 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq81tif645tgrqfonedg",
+    "operations": [
+      {
+        "set_replica_identity": {
+          "table": "youtube_videos",
+          "identity": {
+            "type": "full",
+            "index": ""
+          }
+        }
+      },
+      {
+        "add_column": {
+          "table": "youtube_videos",
+          "column": {
+            "name": "xata_createdat",
+            "type": "timestamptz",
+            "default": "now()",
+            "nullable": false
+          }
+        }
+      },
+      {
+        "add_column": {
+          "up": "now()",
+          "table": "youtube_videos",
+          "column": {
+            "name": "xata_updatedat",
+            "type": "timestamptz",
+            "default": "now()",
+            "nullable": false
+          }
+        }
+      },
+      {
+        "add_column": {
+          "table": "youtube_videos",
+          "column": {
+            "name": "xata_id",
+            "type": "text",
+            "check": {
+              "name": "youtube_videos_xata_id_length_xata_id",
+              "constraint": "length(\"xata_id\") < 256"
+            },
+            "unique": true,
+            "default": "'rec_' || xata_private.xid()",
+            "nullable": false
+          }
+        }
+      },
+      {
+        "add_column": {
+          "table": "youtube_videos",
+          "column": {
+            "name": "xata_version",
+            "type": "integer",
+            "default": "0",
+            "nullable": false
+          }
+        }
+      },
+      {
+        "sql": {
+          "up": "CREATE TRIGGER xata_maintain_metadata_trigger_pgroll\n  BEFORE INSERT OR UPDATE\n  ON \"youtube_videos\"\n  FOR EACH ROW\n  EXECUTE FUNCTION xata_private.maintain_metadata_trigger_pgroll()",
+          "onComplete": true
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq81tif645tgrqfonedg",
+  "parent": "mig_cq81th0a37hm76l9ni60",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:04:58.709416Z"
+}

@@ -18,14 +18,13 @@ import Tabs from "@/tailus-ui/tabs";
 import { Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { BrowserIcon, YoutubeIcon } from "@/components/icons";
-import AddYoutubeVideo from "./add-yt-video-form";
+import AddYoutubeVideoForm from "./add-yt-video-form";
+import UploadFileForm from "./upload-file-form";
 
 export type DocumentType = "youtube" | "webpage" | "file";
 
 const AddDocumentSheet = () => {
    const [isOpen, setOpen] = useState(false);
-   const [docType, setDocType] = useState<DocumentType>("youtube");
-   const underline = useRef<HTMLSpanElement>(null);
 
    useKeypress("n", (e) => {
       setOpen(true);
@@ -86,19 +85,27 @@ const AddDocumentSheet = () => {
                      </Tabs.List>
                      <Tabs.Content
                         value="youtube"
-                        className="text-[--caption-text-color]"
+                        className="text-[--caption-text-color] focus-visible:outline-none"
                      >
-                        <AddYoutubeVideo />
+                        <AddYoutubeVideoForm
+                           onSuccess={() => {
+                              setOpen(false);
+                           }}
+                        />
                      </Tabs.Content>
                      <Tabs.Content
                         value="file"
-                        className="text-[--caption-text-color]"
+                        className="text-[--caption-text-color] focus-visible:outline-none"
                      >
-                        upload a file
+                        <UploadFileForm
+                           onSuccess={() => {
+                              setOpen(false);
+                           }}
+                        />
                      </Tabs.Content>
                      <Tabs.Content
                         value="webpage"
-                        className="text-[--caption-text-color]"
+                        className="text-[--caption-text-color] focus-visible:outline-none"
                      >
                         Insert an article/webpage link
                      </Tabs.Content>

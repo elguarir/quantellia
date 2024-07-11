@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_5a26a6cf892ca4",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE web_pages ADD CONSTRAINT web_pages_doc_id_fkey FOREIGN KEY (doc_id) REFERENCES documents (id) ON UPDATE CASCADE ON DELETE CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_5a26a6cf892ca4",
+  "parent": "sql_55ddc30d462fc3",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:04:27.880752Z"
+}

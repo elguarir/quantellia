@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_608c37bd5f02b3",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX transcripts_video_id_key ON transcripts USING btree (video_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_608c37bd5f02b3",
+  "parent": "sql_4967eef87fa890",
+  "schema": "public",
+  "startedAt": "2024-07-11T02:47:09.217395Z"
+}

@@ -9,39 +9,127 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  firstName     String?        @map("first_name")
-  lastName      String?        @map("last_name")
-  avatar        String
-  email         String         @unique
-  youtubeVideos YoutubeVideo[]
-
-  createdAt      DateTime @default(now()) @map("created_at")
-  xata_version   Int      @default(0)
-  xata_createdat DateTime @default(now()) @db.Timestamptz(6)
-  xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
-  xata_id        String   @unique(map: "users__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  id             String     @id
+  firstName      String?    @map("first_name")
+  lastName       String?    @map("last_name")
+  avatar         String
+  email          String     @unique
+  xata_updatedat DateTime   @default(now()) @db.Timestamptz(6)
+  xata_id        String     @unique(map: "users__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int        @default(0)
+  xata_createdat DateTime   @default(now()) @db.Timestamptz(6)
+  documents      Document[]
 
   @@map("users")
 }
 
-model YoutubeVideo {
-  id      String @id @default(uuid())
-  userId  String @map("user_id")
-  channel String
-  title   String
-  length  Int
-  views   Int?
-  thumb   String
-  link    String
-  content String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Document {
+  id             String           @id @default(dbgenerated("('doc_'::text || (xata_private.xid())::text)"))
+  userId         String           @map("user_id")
+  type           DocumentType
+  xata_updatedat DateTime         @default(now()) @db.Timestamptz(6)
+  xata_id        String           @unique(map: "documents__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int              @default(0)
+  xata_createdat DateTime         @default(now()) @db.Timestamptz(6)
+  status         ProcessingStatus @default(PENDING)
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  file           File?
+  vectors        Vectors?
+  webPage        WebPage?
+  youtubeVideo   YoutubeVideo?
 
-  createdAt      DateTime @default(now()) @map("created_at")
-  xata_id        String   @unique(map: "youtube_videos__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  @@map("documents")
+}
+
+model YoutubeVideo {
+  id             String      @id @default(dbgenerated("('vid_'::text || (xata_private.xid())::text)"))
+  channel        String
+  title          String
+  description    String?
+  length         Int
+  views          Int?
+  thumb          String
+  link           String
+  docId          String      @unique @map("doc_id")
+  xata_createdat DateTime    @default(now()) @db.Timestamptz(6)
+  xata_updatedat DateTime    @default(now()) @db.Timestamptz(6)
+  xata_id        String      @unique(map: "youtube_videos__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int         @default(0)
+  transcript     Transcript?
+  document       Document    @relation(fields: [docId], references: [id], onDelete: Cascade)
+
+  @@map("youtube_videos")
+}
+
+model WebPage {
+  id             String   @id @default(dbgenerated("('page_'::text || (xata_private.xid())::text)"))
+  docId          String   @unique @map("doc_id")
+  title          String
+  description    String?
+  favicon        String?
+  banner         String?
+  link           String
+  text           String?
+  xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
+  xata_id        String   @unique(map: "web_pages__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int      @default(0)
+  xata_createdat DateTime @default(now()) @db.Timestamptz(6)
+  document       Document @relation(fields: [docId], references: [id], onDelete: Cascade)
+
+  @@map("web_pages")
+}
+
+model Transcript {
+  id             String       @id
+  text           String?
+  summary        String?
+  confidence     Float?
+  videoId        String       @unique @map("video_id")
+  xata_id        String       @unique(map: "transcripts__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int          @default(0)
+  xata_createdat DateTime     @default(now()) @db.Timestamptz(6)
+  xata_updatedat DateTime     @default(now()) @db.Timestamptz(6)
+  video          YoutubeVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@map("transcripts")
+}
+
+model File {
+  id             String   @id @default(dbgenerated("('file_'::text || (xata_private.xid())::text)"))
+  docId          String   @unique @map("doc_id")
+  xata_id        String   @unique(map: "files__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
   xata_version   Int      @default(0)
   xata_createdat DateTime @default(now()) @db.Timestamptz(6)
   xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
+  file           Json
+  document       Document @relation(fields: [docId], references: [id], onDelete: Cascade)
 
-  @@map("youtube_videos")
+  @@map("files")
+}
+
+model Vectors {
+  id             String   @id @default(dbgenerated("('vec_'::text || (xata_private.xid())::text)"))
+  docId          String   @unique @map("doc_id")
+  content        String
+  xata_id        String   @unique(map: "vectors__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int      @default(0)
+  xata_createdat DateTime @default(now()) @db.Timestamptz(6)
+  xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
+  embedding      Float[]  @db.Real
+  document       Document @relation(fields: [docId], references: [id], onDelete: Cascade)
+
+  @@map("vectors")
+}
+
+enum ProcessingStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+enum DocumentType {
+  YoutubeVideo
+  File
+  WebPage
 }

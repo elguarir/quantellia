@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import PageWrapper from "@/components/page-wrapper";
 import {
    Breadcrumb,
@@ -9,10 +9,9 @@ import {
    BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import AddDocumentSheet from "./_components/add-document-sheet";
-import useKeypress from "@/hooks/use-key-press";
 
 const DashboardPage = () => {
-    
+   
    return (
       <PageWrapper
          title={
@@ -38,6 +37,8 @@ const DashboardPage = () => {
                <div>
                   <AddDocumentSheet />
                </div>
+            </div>
+            <div>
             </div>
          </div>
       </PageWrapper>

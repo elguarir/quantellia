@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_9cbe9e7407e24f",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE youtube_videos ADD COLUMN description text"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_9cbe9e7407e24f",
+  "parent": "sql_9f1c2f68cf8c4b",
+  "schema": "public",
+  "startedAt": "2024-07-11T02:11:45.082441Z"
+}

@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_1819c4711b4737",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE youtube_videos DROP CONSTRAINT youtube_videos_user_id_fkey"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_1819c4711b4737",
+  "parent": "mig_cq78hfshn07bo6qaofag",
+  "schema": "public",
+  "startedAt": "2024-07-10T13:17:51.488107Z"
+}

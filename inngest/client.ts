@@ -22,15 +22,33 @@ const prismaMiddleware = new InngestMiddleware({
    },
 });
 
-type TranscriptStarted = {
+type ProcessVideo = {
    data: {
-      requestId: string;
+      docId: string;
    };
 };
- 
+
+type TranscriptionCompleted = {
+   data: {
+      request_id: string;
+      text: string;
+      confidence: number;
+   };
+};
+
+type generateTranscriptSummary = {
+   data: {
+      title: string;
+      description: string | null;
+      channel: string;
+      text: string | null;
+   };
+};
 
 type Events = {
-   "transcription/new.started": TranscriptStarted;
+   "youtube/video.process": ProcessVideo;
+   "transcription.completed": TranscriptionCompleted;
+   "transcript.generateSummary": generateTranscriptSummary;
 };
 
 // Create a client to send and receive events

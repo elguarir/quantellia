@@ -8,6 +8,194 @@ import type {
 
 const tables = [
   {
+    name: "documents",
+    columns: [
+      {
+        name: "id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('doc_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "status",
+        type: 'bb_avu08cenl92c74utu9adfmav0o_ag8fco."ProcessingStatus"',
+        notNull: true,
+        unique: false,
+        defaultValue:
+          "'PENDING'::bb_avu08cenl92c74utu9adfmav0o_ag8fco.\"ProcessingStatus\"",
+      },
+      {
+        name: "type",
+        type: 'bb_avu08cenl92c74utu9adfmav0o_ag8fco."DocumentType"',
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "user_id",
+        type: "link",
+        link: { table: "users" },
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "xata_createdat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "xata_updatedat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+      },
+    ],
+  },
+  {
+    name: "files",
+    columns: [
+      {
+        name: "doc_id",
+        type: "link",
+        link: { table: "documents" },
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+      },
+      {
+        name: "file",
+        type: "file",
+        file: { defaultPublicAccess: false },
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('file_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "xata_createdat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "xata_updatedat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+      },
+    ],
+  },
+  {
+    name: "transcripts",
+    columns: [
+      {
+        name: "confidence",
+        type: "float",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+      },
+      {
+        name: "summary",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "text",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "video_id",
+        type: "link",
+        link: { table: "youtube_videos" },
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+      },
+      {
+        name: "xata_createdat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "xata_updatedat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+      },
+    ],
+  },
+  {
     name: "users",
     columns: [
       {
@@ -16,13 +204,6 @@ const tables = [
         notNull: true,
         unique: false,
         defaultValue: null,
-      },
-      {
-        name: "created_at",
-        type: "timestamp(3) without time zone",
-        notNull: true,
-        unique: false,
-        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "email",
@@ -83,6 +264,158 @@ const tables = [
     ],
   },
   {
+    name: "vectors",
+    columns: [
+      {
+        name: "content",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "doc_id",
+        type: "link",
+        link: { table: "documents" },
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+      },
+      {
+        name: "embedding",
+        type: "vector",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('vec_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "xata_createdat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "xata_updatedat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+      },
+    ],
+  },
+  {
+    name: "web_pages",
+    columns: [
+      {
+        name: "banner",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "description",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "doc_id",
+        type: "link",
+        link: { table: "documents" },
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+      },
+      {
+        name: "favicon",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('page_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "link",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "text",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "title",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "xata_createdat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "xata_updatedat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+      },
+    ],
+  },
+  {
     name: "youtube_videos",
     columns: [
       {
@@ -93,25 +426,26 @@ const tables = [
         defaultValue: null,
       },
       {
-        name: "content",
+        name: "description",
         type: "text",
-        notNull: true,
+        notNull: false,
         unique: false,
         defaultValue: null,
       },
       {
-        name: "created_at",
-        type: "timestamp(3) without time zone",
+        name: "doc_id",
+        type: "link",
+        link: { table: "documents" },
         notNull: true,
-        unique: false,
-        defaultValue: "CURRENT_TIMESTAMP",
+        unique: true,
+        defaultValue: null,
       },
       {
         name: "id",
         type: "text",
         notNull: true,
         unique: true,
-        defaultValue: null,
+        defaultValue: "('vid_'::text || (xata_private.xid())::text)",
       },
       {
         name: "length",
@@ -137,14 +471,6 @@ const tables = [
       {
         name: "title",
         type: "text",
-        notNull: true,
-        unique: false,
-        defaultValue: null,
-      },
-      {
-        name: "user_id",
-        type: "link",
-        link: { table: "users" },
         notNull: true,
         unique: false,
         defaultValue: null,
@@ -191,14 +517,34 @@ const tables = [
 export type SchemaTables = typeof tables;
 export type InferredTypes = SchemaInference<SchemaTables>;
 
+export type Documents = InferredTypes["documents"];
+export type DocumentsRecord = Documents & XataRecord;
+
+export type Files = InferredTypes["files"];
+export type FilesRecord = Files & XataRecord;
+
+export type Transcripts = InferredTypes["transcripts"];
+export type TranscriptsRecord = Transcripts & XataRecord;
+
 export type Users = InferredTypes["users"];
 export type UsersRecord = Users & XataRecord;
+
+export type Vectors = InferredTypes["vectors"];
+export type VectorsRecord = Vectors & XataRecord;
+
+export type WebPages = InferredTypes["web_pages"];
+export type WebPagesRecord = WebPages & XataRecord;
 
 export type YoutubeVideos = InferredTypes["youtube_videos"];
 export type YoutubeVideosRecord = YoutubeVideos & XataRecord;
 
 export type DatabaseSchema = {
+  documents: DocumentsRecord;
+  files: FilesRecord;
+  transcripts: TranscriptsRecord;
   users: UsersRecord;
+  vectors: VectorsRecord;
+  web_pages: WebPagesRecord;
   youtube_videos: YoutubeVideosRecord;
 };
 

@@ -3,8 +3,10 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/components/theme-provider";
-import ClerkProvider from "@/components/clerk-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import ClerkProvider from "@/components/providers/clerk-provider";
+import QueryClientProvider from "@/components/providers/query-client-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
    title: "Quantellia",
@@ -30,7 +32,12 @@ export default function RootLayout({
             )}
          >
             <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-               <ClerkProvider>{children}</ClerkProvider>
+               <ClerkProvider>
+                  <QueryClientProvider>
+                     {children}
+                     <Toaster closeButton duration={1750} />
+                  </QueryClientProvider>
+               </ClerkProvider>
             </ThemeProvider>
          </body>
       </html>

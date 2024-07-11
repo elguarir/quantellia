@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_4967eef87fa890",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE transcripts (id text NOT NULL, text text, summary text, confidence double precision NOT NULL, video_id text NOT NULL, created_at timestamp(3) NOT NULL DEFAULT current_timestamp, xata_id text NOT NULL DEFAULT 'rec_'::text || xata_private.xid()::text, xata_version int NOT NULL DEFAULT 0, xata_createdat timestamptz(6) NOT NULL DEFAULT current_timestamp, xata_updatedat timestamptz(6) NOT NULL DEFAULT current_timestamp, CONSTRAINT transcripts_pkey PRIMARY KEY (id))"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_4967eef87fa890",
+  "parent": "sql_e8c41befa6ba4e",
+  "schema": "public",
+  "startedAt": "2024-07-11T02:47:08.83876Z"
+}

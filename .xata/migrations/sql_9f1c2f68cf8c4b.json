@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_9f1c2f68cf8c4b",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE youtube_videos ADD COLUMN status \"ProcessingStatus\" NOT NULL DEFAULT 'PENDING', ALTER COLUMN content DROP NOT NULL"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_9f1c2f68cf8c4b",
+  "parent": "sql_f6d3a6a20f68bd",
+  "schema": "public",
+  "startedAt": "2024-07-11T02:08:30.6933Z"
+}

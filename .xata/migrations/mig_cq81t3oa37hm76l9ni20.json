@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq81t3oa37hm76l9ni20",
+    "operations": [
+      {
+        "drop_table": {
+          "name": "transcripts"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq81t3oa37hm76l9ni20",
+  "parent": "mig_cq81t2f645tgrqfonebg",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:04:00.277829Z"
+}

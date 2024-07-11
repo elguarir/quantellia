@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq81t5oa37hm76l9ni30",
+    "operations": [
+      {
+        "drop_table": {
+          "name": "youtube_videos"
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq81t5oa37hm76l9ni30",
+  "parent": "mig_cq81t3oa37hm76l9ni20",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:04:08.134701Z"
+}

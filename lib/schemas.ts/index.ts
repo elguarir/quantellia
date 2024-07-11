@@ -17,3 +17,17 @@ export const addYoutubeVideoSchema = z.object({
          { message: "Invalid youtube link" },
       ),
 });
+// 20MB
+const MAX_FILE_SIZE = 20000000;
+
+export const uploadFileSchema = z.object({
+   file: z
+      .instanceof(File)
+      .refine((value) => value.size < MAX_FILE_SIZE, {
+         message: "File is too large",
+      })
+      .refine((value) => value.type.startsWith("application/pdf"), {
+         message: "Only PDF files are allowed.",
+      }),
+   docId: z.string().optional(),
+});

@@ -17,15 +17,53 @@ export const getIdFromVideoLink = (link: string) => {
 interface getYoutubeVideResponse {
    channel: string;
    title: string;
+   description: string | null;
    length: number;
    thumb: string;
    views: number | null;
-   url: string;
 }
 
-export async function getYoutubeVideo(
+export async function getYoutubeVideoDetails(
    id: string,
 ): Promise<getYoutubeVideResponse> {
+   const options = {
+      method: "GET",
+      url: "https://yt-api.p.rapidapi.com/video/info",
+      params: { id },
+      headers: {
+         "x-rapidapi-key": process.env.YOUTUBE_API_KEY as string,
+         "x-rapidapi-host": "yt-api.p.rapidapi.com",
+      },
+   };
+
+   const { data } = await axios.request(options);
+   if (data.error) {
+      throw new Error("Failed to load youtube video.");
+   }
+
+   if (data.isUnlisted || data.isPrivate) {
+      throw new Error("Video is private or unavailable");
+   }
+
+   const channel = data.channelTitle as string;
+   const title = data.title as string;
+   const description = (data.description as string) ?? null;
+   const length = parseInt(data.lengthSeconds as string);
+   const views = parseInt(data.viewCount as string) ?? null;
+   // find last thumbnail
+   const thumb = data.thumbnail[data.thumbnail.length - 1].url as string;
+
+   return {
+      channel,
+      title,
+      description,
+      length,
+      views,
+      thumb,
+   };
+}
+
+export async function getYoutubeVideoUrl(id: string): Promise<string> {
    const options = {
       method: "GET",
       url: "https://yt-api.p.rapidapi.com/dl",
@@ -39,25 +77,14 @@ export async function getYoutubeVideo(
    const { data } = await axios.request(options);
 
    if (data.status !== "OK") {
-      throw new Error("Failed to fetch audio URL");
+      throw new Error("Failed to load youtube video.");
    }
 
-   const channel = data.channelTitle as string;
-   const title = data.title as string;
-   const length = parseInt(data.lengthSeconds as string);
-   const views = parseInt(data.viewCount as string) ?? null;
-   // find last thumbnail
-   const thumb = data.thumbnail[data.thumbnail.length - 1].url as string;
-   const url = data.formats[0].url as string;
+   if (data.isUnlisted || data.isPrivate) {
+      throw new Error("Video is private or unavailable");
+   }
 
-   return {
-      channel,
-      title,
-      length,
-      views,
-      thumb,
-      url,
-   };
+   return data.formats[0].url as string;
 }
 
 /**

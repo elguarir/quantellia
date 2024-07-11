@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_08a30fd7b7b5f6",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE transcripts ADD CONSTRAINT transcripts_video_id_fkey FOREIGN KEY (video_id) REFERENCES youtube_videos (id) ON UPDATE CASCADE ON DELETE CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_08a30fd7b7b5f6",
+  "parent": "sql_2e65a82e7e7c6b",
+  "schema": "public",
+  "startedAt": "2024-07-11T02:47:09.610475Z"
+}

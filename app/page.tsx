@@ -21,6 +21,8 @@ import {
    SignedOut,
 } from "@clerk/nextjs";
 import { LoadingDots } from "@/components/loading-dots";
+import { client } from "@/lib/client";
+
 
 type NavLink = {
    href: string;
@@ -93,7 +95,11 @@ const SiteHeader: React.FC = () => {
    const navItemsRef = useRef<HTMLDivElement>(null);
 
    useEffect(() => {
+      // client.api.v1.documents.
+      
       setIsMounted(true);
+
+      
    }, []);
 
    useEffect(() => {

@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_cb7eccd31b4f1f",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE youtube_videos DROP user_id"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_cb7eccd31b4f1f",
+  "parent": "sql_c59609983a8276",
+  "schema": "public",
+  "startedAt": "2024-07-11T18:22:23.858201Z"
+}
