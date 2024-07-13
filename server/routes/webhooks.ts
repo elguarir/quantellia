@@ -7,7 +7,7 @@ const webhooks = new Hono().post("/deepgram", async (c) => {
    console.log(`Received webhook from Deepgram: ${body.metadata.request_id}`);
 
    const res = await inngest.send({
-      name: "transcription.completed",
+      name: "transcription.complete",
       data: {
          text:
             body.results.channels[0].alternatives[0].paragraphs?.transcript ??

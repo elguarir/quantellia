@@ -1,5 +1,17 @@
-import { processVideo, completeTranscription, processFile } from "./functions";
+import {
+   processVideo,
+   completeTranscription,
+   processFile,
+   completeFileProcessing,
+   generateTranscriptEmbeddings,
+} from "./functions";
 
-export const functions = [processVideo, completeTranscription, processFile];
+export const functions = [
+   processVideo,
+   completeTranscription,
+   processFile,
+   completeFileProcessing,
+   generateTranscriptEmbeddings,
+];
 
 export { inngest } from "./client";

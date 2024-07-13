@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_40caee1a1498ff",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE documents DROP is_archived, ADD COLUMN archived_at timestamp(3)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_40caee1a1498ff",
+  "parent": "sql_7f57da4a45a92a",
+  "schema": "public",
+  "startedAt": "2024-07-13T21:15:12.74038Z"
+}

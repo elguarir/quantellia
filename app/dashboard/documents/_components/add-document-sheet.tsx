@@ -20,12 +20,13 @@ import { useRef, useState } from "react";
 import { BrowserIcon, YoutubeIcon } from "@/components/icons";
 import AddYoutubeVideoForm from "./add-yt-video-form";
 import UploadFileForm from "./upload-file-form";
+import { useRouter } from "next/navigation";
 
 export type DocumentType = "youtube" | "webpage" | "file";
 
 const AddDocumentSheet = () => {
    const [isOpen, setOpen] = useState(false);
-
+   const router = useRouter();
    useKeypress("n", (e) => {
       setOpen(true);
    });
@@ -89,6 +90,7 @@ const AddDocumentSheet = () => {
                      >
                         <AddYoutubeVideoForm
                            onSuccess={() => {
+                              router.refresh();
                               setOpen(false);
                            }}
                         />
@@ -99,6 +101,7 @@ const AddDocumentSheet = () => {
                      >
                         <UploadFileForm
                            onSuccess={() => {
+                              router.refresh();
                               setOpen(false);
                            }}
                         />

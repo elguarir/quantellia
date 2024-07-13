@@ -2,15 +2,12 @@
 
 import { addYoutubeVideoSchema, uploadFileSchema } from "@/lib/schemas.ts";
 import { authedProcedure } from "./procedures";
-import { CallbackUrl, createClient } from "@deepgram/sdk";
 import { getIdFromVideoLink, getYoutubeVideoDetails } from "@/lib/helpers";
 import { db } from "@/lib/db";
 import { inngest } from "@/inngest";
 import { z } from "zod";
-import { randomUUID } from "crypto";
 import { getXataClient } from "@/lib/xata";
-
-const dg = createClient(process.env.DEEPGRAM_API_KEY!);
+import { XataError } from "@xata.io/client";
 
 export const addYoutubeVideo = authedProcedure
    .createServerAction()
@@ -81,6 +78,7 @@ export const generateUploadUrl = authedProcedure
                size: pdf.size,
                base64Content: "",
                uploadUrlTimeout: 3600,
+               signedUrlTimeout: 3600 * 4, // 4 hours
             },
          },
          ["pdf.uploadUrl"],
@@ -126,4 +124,107 @@ export const sendFileForProcessing = authedProcedure
          success: true,
          ids,
       };
+   });
+
+export const getDownloadUrl = authedProcedure
+   .createServerAction()
+   .input(
+      z.object({
+         docId: z.string(),
+      }),
+   )
+   .handler(async ({ input, ctx }) => {
+      const xata = getXataClient();
+      try {
+         const file = await xata.db.uploaded_files
+            .filter({
+               doc_id: { id: input.docId, user_id: ctx.user.id },
+            })
+            .select(["*", "pdf.signedUrl"])
+            .getFirstOrThrow();
+
+         if (file.pdf.size === 0) {
+            throw new Error("File has no content, remove it and re-upload");
+         }
+
+         console.log(file.pdf);
+         return {
+            success: true,
+            signedUrl: file.pdf.signedUrl,
+         };
+      } catch (error) {
+         if (error instanceof XataError) {
+            throw new Error("File not found");
+         }
+         throw error;
+      }
+   });
+
+export const performActionOnDocument = authedProcedure
+   .createServerAction()
+   .input(
+      z.object({
+         docId: z.string(),
+         action: z.union([
+            z.literal("archive"),
+            z.literal("delete"),
+            z.literal("restore"),
+         ]),
+      }),
+   )
+   .handler(async ({ input, ctx }) => {
+      const doc = await db.document.findUnique({
+         where: {
+            id: input.docId,
+            userId: ctx.user.id,
+         },
+      });
+
+      if (!doc) {
+         throw new Error("Document not found");
+      }
+
+      try {
+         if (input.action === "archive") {
+            await db.document.update({
+               where: {
+                  id: input.docId,
+               },
+               data: {
+                  archivedAt: new Date(),
+               },
+            });
+            return {
+               success: true,
+               message: "Document archived successfully",
+            };
+         } else if (input.action === "delete") {
+            await db.document.delete({
+               where: {
+                  id: input.docId,
+               },
+            });
+
+            return {
+               success: true,
+               message: "Document deleted successfully",
+            };
+         } else if (input.action === "restore") {
+            await db.document.update({
+               where: {
+                  id: input.docId,
+               },
+               data: {
+                  archivedAt: null,
+               },
+            });
+
+            return {
+               success: true,
+               message: "Document restored successfully",
+            };
+         }
+      } catch (error) {
+         throw new Error("Failed to perform action");
+      }
    });

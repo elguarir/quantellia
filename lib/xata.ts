@@ -11,6 +11,13 @@ const tables = [
     name: "documents",
     columns: [
       {
+        name: "archived_at",
+        type: "timestamp(3) without time zone",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
         name: "id",
         type: "text",
         notNull: true,

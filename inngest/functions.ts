@@ -11,6 +11,7 @@ import { CallbackUrl } from "@deepgram/sdk";
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { getXataClient } from "@/lib/xata";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { Document } from "langchain/document";
 
 export const processVideo = inngest.createFunction(
    { id: "process-video" },
@@ -95,7 +96,7 @@ export const processVideo = inngest.createFunction(
 
 export const completeTranscription = inngest.createFunction(
    { id: "complete-transcription" },
-   { event: "transcription.completed" },
+   { event: "transcription.complete" },
    async ({ event, step, db }) => {
       const transcript = await db.transcript.findUnique({
          where: {
@@ -121,7 +122,26 @@ export const completeTranscription = inngest.createFunction(
       const updated = await step.run("update-transcript", async () => {
          console.log(`Generating summary for video: ${transcript.id}`);
          const result = await generateText({
-            model: google("models/gemini-1.5-flash-latest"),
+            model: google("models/gemini-1.5-flash-latest", {
+               safetySettings: [
+                  {
+                     category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                     threshold: "BLOCK_NONE",
+                  },
+                  {
+                     category: "HARM_CATEGORY_HARASSMENT",
+                     threshold: "BLOCK_NONE",
+                  },
+                  {
+                     category: "HARM_CATEGORY_HATE_SPEECH",
+                     threshold: "BLOCK_NONE",
+                  },
+                  {
+                     category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                     threshold: "BLOCK_NONE",
+                  },
+               ],
+            }),
             system: `You are a helpful assistant,
                   your task is to summarize for this video transcript, ensure to use markdown formmating, in the summary you should include the main points of the video, in a nice and concise manner. also incldue a TLDR section at the end, in a nice bullet point format.
                `,
@@ -145,6 +165,74 @@ export const completeTranscription = inngest.createFunction(
                text: event.data.text,
                confidence: event.data.confidence,
                summary: result.text,
+            },
+         });
+      });
+
+      await step.sendEvent("generate-embeddings", {
+         name: "transcript.generateEmbeddings",
+         data: { request_id: transcript.id, text: event.data.text },
+      });
+
+      return {
+         success: true,
+         updated,
+      };
+   },
+);
+
+export const generateTranscriptEmbeddings = inngest.createFunction(
+   { id: "generate-transcript-embeddings" },
+   { event: "transcript.generateEmbeddings" },
+   async ({ event, step, db }) => {
+      const transcript = await db.transcript.findUnique({
+         where: {
+            id: event.data.request_id,
+         },
+         select: {
+            id: true,
+            video: {
+               select: {
+                  docId: true,
+               },
+            },
+         },
+      });
+
+      if (!transcript) {
+         throw new Error("Transcript not found");
+      }
+
+      const output = await step.run("embed-transcript", async () => {
+         const splitter = new RecursiveCharacterTextSplitter({
+            chunkSize: 1000,
+            chunkOverlap: 200,
+         });
+
+         // split the text instead into chunks
+         const docOutput = await splitter.splitDocuments([
+            new Document({ pageContent: event.data.text }),
+         ]);
+
+         const embeds = await embedTexts([
+            ...docOutput.map((doc) => doc.pageContent),
+         ]);
+         const res = await db.vectors.createManyAndReturn({
+            data: docOutput.map((doc, index) => {
+               return {
+                  content: doc.pageContent,
+                  embedding: embeds[index],
+                  metadata: {},
+                  docId: transcript.video.docId,
+               };
+            }),
+         });
+
+         await db.transcript.update({
+            where: {
+               id: transcript.id,
+            },
+            data: {
                video: {
                   update: {
                      document: {
@@ -156,20 +244,24 @@ export const completeTranscription = inngest.createFunction(
                },
             },
          });
+
+         return res;
       });
 
       return {
          success: true,
-         updated,
+         count: output.length,
       };
    },
 );
 
+/**
+ * in here I could have used a step but somehow on the first step gets executed, that is why I separated the embed part into a separate function
+ */
 export const processFile = inngest.createFunction(
    { id: "process-file" },
    { event: "file.process" },
    async ({ event, step, db }) => {
-      console.log("Processing file", event.data.docId);
       const xata = getXataClient();
 
       const [dbFile, dbDoc] = await Promise.all([
@@ -191,43 +283,81 @@ export const processFile = inngest.createFunction(
          return;
       }
 
-      const texts = await step.run("load-pdf-file", async () => {
-         console.log("Loading PDF file");
+      await step.run("process-file", async () => {
          await dbDoc.update({
             status: "IN_PROGRESS",
          });
-
-         const url = dbFile.pdf.signedUrl;
-         const response = await fetch(url!);
-         const data = await response.blob();
-         const loader = new WebPDFLoader(data);
-         const docs = await loader.load();
-         const textSplitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 1000,
-            chunkOverlap: 200,
-         });
-         // split the document into chunks
-         const splitDocs = await textSplitter.splitDocuments(docs);
-         return splitDocs.map((doc) => {
-            return {
-               text: doc.pageContent,
-               metadata: {
-                  totalPages: parseInt(doc.metadata.pdf.totalPages),
-                  pageNumber: parseInt(doc.metadata.loc.pageNumber),
-                  lines: {
-                     from: parseInt(doc.metadata.loc.lines.from) ?? null,
-                     to: parseInt(doc.metadata.loc.lines.to) ?? null,
+         try {
+            const url = dbFile.pdf.signedUrl;
+            const response = await fetch(url!);
+            const data = await response.blob();
+            const loader = new WebPDFLoader(data);
+            const docs = await loader.load();
+            const textSplitter = new RecursiveCharacterTextSplitter({
+               chunkSize: 1000,
+               chunkOverlap: 200,
+            });
+            // split the document into chunks
+            const splitDocs = await textSplitter.splitDocuments(docs);
+            const formatted = splitDocs.map((doc) => {
+               return {
+                  text: doc.pageContent,
+                  metadata: {
+                     totalPages: parseInt(doc.metadata.pdf.totalPages),
+                     pageNumber: parseInt(doc.metadata.loc.pageNumber),
+                     lines: {
+                        from: parseInt(doc.metadata.loc.lines.from) ?? null,
+                        to: parseInt(doc.metadata.loc.lines.to) ?? null,
+                     },
                   },
-               },
-            };
-         });
-      });
+               };
+            });
 
+            // somehow this doesn't work, the event doesn't get sent ):
+            // await step.sendEvent("complete-file-processing", {
+            //    name: "file.completeProcessing",
+            //    data: { content: texts, docId: event.data.docId },
+            // });
+            return await inngest.send({
+               name: "file.completeProcessing",
+               data: {
+                  docId: event.data.docId,
+                  content: formatted,
+               },
+            });
+         } catch (error) {
+            if (error instanceof Error) {
+               await dbDoc.update({
+                  status: "FAILED",
+               });
+               throw new Error("Invalid PDF file");
+            }
+         }
+      });
+   },
+);
+
+export const completeFileProcessing = inngest.createFunction(
+   { id: "complete-file-processing" },
+   { event: "file.completeProcessing" },
+   async ({ event, step, db }) => {
+      console.log("complete file processing");
       // embed all the chunks and save them
-      return await step.run("process-documents", async () => {
-         console.log("Processing documents");
-         const output = await embedTexts(texts.map((doc) => doc.text));
-         const formattedOutput = texts.map((doc, index) => {
+      const xata = getXataClient();
+
+      const [dbDoc] = await Promise.all([
+         xata.db.documents
+            .filter({ id: event.data.docId })
+            .select(["*"])
+            .getFirstOrThrow(),
+      ]);
+
+      await step.run("process-documents", async () => {
+         const output = await embedTexts(
+            event.data.content.map((doc) => doc.text),
+         );
+
+         const formattedOutput = event.data.content.map((doc, index) => {
             return {
                content: doc.text,
                embedding: output[index],
@@ -240,6 +370,7 @@ export const processFile = inngest.createFunction(
          await dbDoc.update({
             status: "PROCESSED",
          });
+
          return {
             success: true,
             count: records.length,

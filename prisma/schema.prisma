@@ -8,6 +8,10 @@ datasource db {
   relationMode = "foreignKeys"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 model User {
   id             String          @id
   firstName      String?         @map("first_name")
@@ -25,19 +29,22 @@ model User {
 }
 
 model Document {
-  id             String           @id @default(dbgenerated("('doc_'::text || (xata_private.xid())::text)"))
-  userId         String           @map("user_id")
-  type           DocumentType
-  status         ProcessingStatus @default(PENDING)
-  xata_id        String           @unique(map: "documents__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
-  xata_version   Int              @default(0)
-  xata_createdat DateTime         @default(now()) @db.Timestamptz(6)
-  xata_updatedat DateTime         @default(now()) @db.Timestamptz(6)
-  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  file           File?
-  vectors        Vectors[]
-  webPage        WebPage?
-  youtubeVideo   YoutubeVideo?
+  id         String           @id @default(dbgenerated("('doc_'::text || (xata_private.xid())::text)"))
+  userId     String           @map("user_id")
+  type       DocumentType
+  status     ProcessingStatus @default(PENDING)
+  archivedAt DateTime?        @map("archived_at")
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  file         File?
+  vectors      Vectors[]
+  webPage      WebPage?
+  youtubeVideo YoutubeVideo?
+
+  xata_id        String   @unique(map: "documents__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int      @default(0)
+  xata_createdat DateTime @default(now()) @db.Timestamptz(6)
+  xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
 
   @@map("documents")
 }
@@ -117,6 +124,7 @@ model File {
   xata_id        String   @unique(map: "uploaded_files__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
   xata_version   Int      @default(0)
   xata_createdat DateTime @default(now()) @db.Timestamptz(6)
+  /// [XataFile]
   pdf            Json
   document       Document @relation(fields: [docId], references: [id], onDelete: Cascade, map: "files_doc_id_fkey")
 
@@ -124,17 +132,19 @@ model File {
 }
 
 model Notifications {
-  id             String   @id @default(dbgenerated("('not_'::text || (xata_private.xid())::text)"))
-  userId         String   @map("user_id")
-  title          String
-  message        String
-  goLink         String?
-  isRead         Boolean  @default(false) @map("is_read")
+  id      String  @id @default(dbgenerated("('not_'::text || (xata_private.xid())::text)"))
+  userId  String  @map("user_id")
+  title   String
+  message String
+  goLink  String?
+  isRead  Boolean @default(false) @map("is_read")
+
   xata_version   Int      @default(0)
   xata_createdat DateTime @default(now()) @db.Timestamptz(6)
   xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
   xata_id        String   @unique(map: "notifications__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
 }

@@ -34,6 +34,12 @@ type ProcessFile = {
    };
 };
 
+type ProcessWebPage = {
+   data: {
+      docId: string;
+   };
+};
+
 type TranscriptionCompleted = {
    data: {
       request_id: string;
@@ -51,16 +57,43 @@ type generateTranscriptSummary = {
    };
 };
 
+type generateTranscriptEmbeddings = {
+   data: {
+      text: string;
+      request_id: string;
+   };
+};
+
+type completeFileProcessing = {
+   data: {
+      docId: string;
+      content: {
+         text: string;
+         metadata: {
+            totalPages: number;
+            pageNumber: number;
+            lines: {
+               from: number | null;
+               to: number | null;
+            };
+         };
+      }[];
+   };
+};
+
 type Events = {
    "video.process": ProcessVideo;
    "file.process": ProcessFile;
-   "transcription.completed": TranscriptionCompleted;
+   "webpage.process": ProcessWebPage;
+   "file.completeProcessing": completeFileProcessing;
+   "transcription.complete": TranscriptionCompleted;
    "transcript.generateSummary": generateTranscriptSummary;
+   "transcript.generateEmbeddings": generateTranscriptEmbeddings;
 };
 
 // Create a client to send and receive events
 export const inngest = new Inngest({
-   id: "fluent-script",
+   id: "quantellia",
    middleware: [prismaMiddleware],
    schemas: new EventSchemas().fromRecord<Events>(),
 });

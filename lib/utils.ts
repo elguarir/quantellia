@@ -32,6 +32,9 @@ export const uploadFile = async (props: UploadFunctionProps) => {
    try {
       props.onStart?.();
       await axios.put(props.url, props.file, {
+         headers: {
+            "Content-Type": props.file.type,
+         },
          onUploadProgress: (progressEvent) => {
             if (progressEvent.total !== undefined) {
                const progress = Math.round(
@@ -70,4 +73,11 @@ export function formatBytes(
          ? accurateSizes[i] ?? "Bytest"
          : sizes[i] ?? "Bytes"
    }`;
+}
+
+export function decodeDoubleEncodedUriComponent(encodedStr: string) {
+   const firstDecoded = decodeURIComponent(encodedStr);
+   const buffer = Buffer.from(firstDecoded, "latin1");
+   const fullyDecoded = buffer.toString("utf8");
+   return fullyDecoded;
 }

@@ -1,4 +1,3 @@
-"use client";
 import PageWrapper from "@/components/page-wrapper";
 import {
    Breadcrumb,
@@ -9,9 +8,42 @@ import {
    BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import AddDocumentSheet from "./_components/add-document-sheet";
+import { db } from "@/lib/db";
+import { auth } from "@clerk/nextjs/server";
+import FilterMenu from "./_components/filter-menu";
+import SearchBar from "./_components/search-bar";
+import { Types } from "@/lib/constants";
+import { parseAsArrayOf, parseAsStringEnum } from "nuqs";
+import DocumentsGrid from "./_components/documents-grid";
 
-const DashboardPage = () => {
-   
+interface DashboardPageProps {
+   searchParams: {
+      search?: string;
+      filter?: string;
+   };
+}
+
+const DashboardPage = async (p: DashboardPageProps) => {
+   const { userId } = auth();
+   if (!userId) return auth().redirectToSignIn({ returnBackUrl: "/dashboard" });
+   const docs = await db.document.findMany({
+      where: {
+         userId,
+      },
+      include: { file: true, youtubeVideo: true, webPage: true },
+      orderBy: {
+         xata_createdat: "desc",
+      },
+   });
+
+   const filterValue =
+      parseAsArrayOf(parseAsStringEnum<Types>(Object.values(Types)), ",")
+         .withOptions({
+            clearOnDefault: true,
+         })
+         .withDefault([])
+         .parse(p.searchParams.filter ?? "") ?? [];
+
    return (
       <PageWrapper
          title={
@@ -30,15 +62,24 @@ const DashboardPage = () => {
             </Breadcrumb>
          }
       >
-         <div className="space-y-6 p-6">
-            <div className="flex items-center justify-between">
+         <div className="divide-y p-6">
+            <div className="flex items-center justify-between pb-6">
                <h1 className="text-2xl font-semibold">Documents</h1>
-
                <div>
                   <AddDocumentSheet />
                </div>
             </div>
-            <div>
+            <div className="flex w-full flex-col space-y-6 py-6">
+               <div className="flex w-full items-center justify-between gap-2">
+                  <SearchBar initialValue={p.searchParams.search} />
+
+                  <div>
+                     <FilterMenu defaultFilter={filterValue ?? []} />
+                  </div>
+               </div>
+               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  <DocumentsGrid initialDocs={docs} filterValue={filterValue} />
+               </div>
             </div>
          </div>
       </PageWrapper>
