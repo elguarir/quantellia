@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_2318a7c3879e21",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE documents ADD CONSTRAINT documents_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_2318a7c3879e21",
+  "parent": "sql_6903f72fcda632",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:28.784386Z"
+}

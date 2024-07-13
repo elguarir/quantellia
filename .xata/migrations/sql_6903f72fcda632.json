@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_6903f72fcda632",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX notifications__pgroll_new_xata_id_key ON notifications USING btree (xata_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_6903f72fcda632",
+  "parent": "sql_570a937c8afeff",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:28.5995Z"
+}

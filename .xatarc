@@ -1,6 +1,6 @@
 {
-  "databaseURL": "https://Mohamed-Elguarir-s-workspace-ag8fco.us-east-1.xata.sh/db/fluent-script",
+  "databaseURL": "https://Mohamed-Elguarir-s-workspace-ag8fco.us-east-1.xata.sh/db/quantellia",
   "codegen": {
-    "output": "utils/xata.ts"
+    "output": "lib/xata.ts"
   }
 }

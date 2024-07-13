@@ -28,6 +28,12 @@ type ProcessVideo = {
    };
 };
 
+type ProcessFile = {
+   data: {
+      docId: string;
+   };
+};
+
 type TranscriptionCompleted = {
    data: {
       request_id: string;
@@ -46,7 +52,8 @@ type generateTranscriptSummary = {
 };
 
 type Events = {
-   "youtube/video.process": ProcessVideo;
+   "video.process": ProcessVideo;
+   "file.process": ProcessFile;
    "transcription.completed": TranscriptionCompleted;
    "transcript.generateSummary": generateTranscriptSummary;
 };

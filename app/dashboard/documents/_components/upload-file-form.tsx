@@ -16,11 +16,11 @@ import {
 import { uploadFileSchema } from "@/lib/schemas.ts";
 import { SheetClose, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/tailus-ui/button";
-import { generateUploadUrl } from "@/server/actions";
+import { generateUploadUrl, sendFileForProcessing } from "@/server/actions";
 import { useServerAction } from "zsa-react";
 import { toast } from "sonner";
 import { Spinner } from "@/components/spinner";
-import { cn, formatBytes } from "@/lib/utils";
+import { cn, formatBytes, uploadFile } from "@/lib/utils";
 import { Dropzone } from "@/components/dropezone";
 import useUpload from "@/hooks/use-upload";
 import Card from "@/components/tailus-ui/card";
@@ -30,30 +30,23 @@ import Badge from "@/components/tailus-ui/badge";
 import * as ResizablePanel from "@/components/resizable-panel";
 import Progress from "@/components/tailus-ui/progress";
 import { Loader2 } from "lucide-react";
-import { ComponentProps } from "react";
+import { ComponentProps, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 interface UploadFileFormProps {
    onSuccess?: () => void;
 }
 
 export default function UploadFileForm(p: UploadFileFormProps) {
-   const { file, onChange, isUploading, startUpload, clear } = useUpload(
-      "single",
-      {
-         autoUpload: false,
-      },
-   );
-   const { execute: generateUrl, isPending } = useServerAction(
-      generateUploadUrl,
-      {
-         onSuccess: ({ data }) => {
-            console.log(data);
-         },
-         onError: ({ err }) => {
-            console.log(err);
-         },
-      },
-   );
+   const [progress, setProgress] = useState<number | null>(null);
+   const [isUploading, setIsUploading] = useState(false);
+   const [isUploaded, setIsUploaded] = useState(false);
+   const { execute: generateUrl, isPending: isGenerating } =
+      useServerAction(generateUploadUrl);
+   const { execute: sendForProcessing, isPending: isSendingForProcessing } =
+      useServerAction(sendFileForProcessing);
+
+   const isPending = isGenerating || isSendingForProcessing || isUploading;
 
    const form = useForm<z.infer<typeof uploadFileSchema>>({
       resolver: zodResolver(uploadFileSchema),
@@ -65,14 +58,39 @@ export default function UploadFileForm(p: UploadFileFormProps) {
          formData.append(key, value);
       });
       const [data, err] = await generateUrl(formData);
+      if (err) {
+         toast.error(err.message);
+         return;
+      }
+
       if (data) {
-         console.log("startUpload");
-         form.setValue("docId", data.docId);
-         startUpload(data.url);
+         setIsUploading(true);
+         await uploadFile({
+            file: values.pdf,
+            url: data.url,
+            onError: (err) => {
+              toast.error(err.message);
+            },
+            onProgress: (progress) => {
+               setProgress(progress);
+            },
+            onSuccess: async () => {
+               setIsUploading(false);
+               setProgress(null);
+               setIsUploaded(true);
+               const [res, err] = await sendForProcessing({
+                  docId: data.docId,
+               });
+               if (err) {
+                  toast.error(err.message);
+                  return;
+               }
+               toast.success("Document uploaded successfully, processing...");
+               p.onSuccess?.();
+            },
+         });
       }
    };
-
-   console.log(file, isUploading);
 
    return (
       <Form {...form}>
@@ -81,10 +99,26 @@ export default function UploadFileForm(p: UploadFileFormProps) {
                <fieldset className="space-y-5" disabled={isPending}>
                   <FormField
                      control={form.control}
-                     name="file"
+                     name="pdf"
                      render={({ field }) => (
                         <FormItem>
-                           <FormLabel>Document</FormLabel>
+                           <div className="flex w-full items-center justify-between gap-1">
+                              <FormLabel>Document</FormLabel>
+                              <Button.Root
+                                 size="xs"
+                                 variant="ghost"
+                                 intent="gray"
+                                 type="button"
+                                 onClick={() => {
+                                    form.reset();
+                                 }}
+                                 className={
+                                    field.value ? "visible" : "invisible"
+                                 }
+                              >
+                                 <Button.Label>Clear</Button.Label>
+                              </Button.Root>
+                           </div>
                            <Dropzone
                               options={{
                                  accept: {
@@ -100,7 +134,6 @@ export default function UploadFileForm(p: UploadFileFormProps) {
                               }}
                               onSelect={(files) => {
                                  field.onChange(files[0]);
-                                 onChange(files[0]);
                               }}
                            >
                               {({
@@ -111,7 +144,9 @@ export default function UploadFileForm(p: UploadFileFormProps) {
                               }) => (
                                  <>
                                     <ResizablePanel.Root
-                                       value={file ? "selected" : "select"}
+                                       value={
+                                          field.value ? "selected" : "select"
+                                       }
                                     >
                                        <ResizablePanel.Content value="selected">
                                           <Card
@@ -127,12 +162,14 @@ export default function UploadFileForm(p: UploadFileFormProps) {
                                                       as="h2"
                                                       size="lg"
                                                       weight="medium"
+                                                      className="line-clamp-1"
                                                    >
-                                                      {file?.file.name}
+                                                      {field?.value?.name}
                                                    </Title>
                                                    <Text size="sm">
                                                       {formatBytes(
-                                                         file?.file.size || 0,
+                                                         field?.value?.size ||
+                                                            0,
                                                          {
                                                             decimals: 2,
                                                             sizeType: "normal",
@@ -141,45 +178,45 @@ export default function UploadFileForm(p: UploadFileFormProps) {
                                                    </Text>
                                                 </div>
                                              </div>
-                                             {file?.status === "uploading" && (
-                                                <div className="w-full">
-                                                   <Progress.Root
-                                                      className="w-full"
-                                                      data-orientation="vertical"
-                                                      value={file?.progress}
-                                                      size="sm"
-                                                      variant="soft"
+                                             {isUploading &&
+                                                progress !== null && (
+                                                   <div className="w-full">
+                                                      <Progress.Root
+                                                         className="w-full"
+                                                         data-orientation="vertical"
+                                                         value={progress}
+                                                         size="sm"
+                                                         variant="soft"
+                                                      >
+                                                         <Progress.Indicator
+                                                            intent="primary"
+                                                            loading="primary"
+                                                            complete="success"
+                                                            style={{
+                                                               transform: `translateX(-${100 - progress}%)`,
+                                                            }}
+                                                         />
+                                                      </Progress.Root>
+                                                   </div>
+                                                )}
+                                             {isUploading ||
+                                                (isUploaded && (
+                                                   <Badge
+                                                      className="absolute right-2 top-1 flex items-center justify-center rounded-full p-0.5"
+                                                      variant="solid"
+                                                      intent={
+                                                         isUploaded
+                                                            ? "success"
+                                                            : "gray"
+                                                      }
                                                    >
-                                                      <Progress.Indicator
-                                                         intent="primary"
-                                                         loading="primary"
-                                                         complete="success"
-                                                         style={{
-                                                            transform: `translateX(-${100 - file?.progress}%)`,
-                                                         }}
-                                                      />
-                                                   </Progress.Root>
-                                                </div>
-                                             )}
-                                             {(file?.status === "done" ||
-                                                file?.status ===
-                                                   "uploading") && (
-                                                <Badge
-                                                   className="absolute right-2 top-2 flex items-center justify-center rounded-full p-0.5"
-                                                   variant="solid"
-                                                   intent={
-                                                      file?.status === "done"
-                                                         ? "success"
-                                                         : "gray"
-                                                   }
-                                                >
-                                                   {file?.status === "done" ? (
-                                                      <CheckIcon className="size-4" />
-                                                   ) : (
-                                                      <Loader2 className="size-4 animate-spin" />
-                                                   )}
-                                                </Badge>
-                                             )}
+                                                      {isUploaded ? (
+                                                         <CheckIcon className="size-4" />
+                                                      ) : (
+                                                         <Loader2 className="size-4 animate-spin" />
+                                                      )}
+                                                   </Badge>
+                                                ))}
                                           </Card>
                                        </ResizablePanel.Content>
                                        <ResizablePanel.Content value="select">
@@ -231,7 +268,13 @@ export default function UploadFileForm(p: UploadFileFormProps) {
                            </Button.Icon>
                         )}
                         <Button.Label>
-                           {isPending ? "Uploading..." : "Upload Document"}
+                           {isGenerating
+                              ? "Creating document..."
+                              : isUploading
+                                ? "Uploading..."
+                                : isSendingForProcessing
+                                  ? "Processing..."
+                                  : "Upload"}
                         </Button.Label>
                      </Button.Root>
                   </SheetFooter>

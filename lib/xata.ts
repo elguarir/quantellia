@@ -19,15 +19,15 @@ const tables = [
       },
       {
         name: "status",
-        type: 'bb_avu08cenl92c74utu9adfmav0o_ag8fco."ProcessingStatus"',
+        type: 'bb_dor669beud5g71j79dvj8og28g_ag8fco."ProcessingStatus"',
         notNull: true,
         unique: false,
         defaultValue:
-          "'PENDING'::bb_avu08cenl92c74utu9adfmav0o_ag8fco.\"ProcessingStatus\"",
+          "'PENDING'::bb_dor669beud5g71j79dvj8og28g_ag8fco.\"ProcessingStatus\"",
       },
       {
         name: "type",
-        type: 'bb_avu08cenl92c74utu9adfmav0o_ag8fco."DocumentType"',
+        type: 'bb_dor669beud5g71j79dvj8og28g_ag8fco."DocumentType"',
         notNull: true,
         unique: false,
         defaultValue: null,
@@ -42,10 +42,10 @@ const tables = [
       },
       {
         name: "xata_createdat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_id",
@@ -56,10 +56,10 @@ const tables = [
       },
       {
         name: "xata_updatedat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_version",
@@ -71,21 +71,12 @@ const tables = [
     ],
   },
   {
-    name: "files",
+    name: "notifications",
     columns: [
       {
-        name: "doc_id",
-        type: "link",
-        link: { table: "documents" },
-        notNull: true,
-        unique: true,
-        defaultValue: null,
-      },
-      {
-        name: "file",
-        type: "file",
-        file: { defaultPublicAccess: false },
-        notNull: true,
+        name: "goLink",
+        type: "text",
+        notNull: false,
         unique: false,
         defaultValue: null,
       },
@@ -94,14 +85,43 @@ const tables = [
         type: "text",
         notNull: true,
         unique: true,
-        defaultValue: "('file_'::text || (xata_private.xid())::text)",
+        defaultValue: "('not_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "is_read",
+        type: "bool",
+        notNull: true,
+        unique: false,
+        defaultValue: "false",
+      },
+      {
+        name: "message",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "title",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "user_id",
+        type: "link",
+        link: { table: "users" },
+        notNull: true,
+        unique: false,
+        defaultValue: null,
       },
       {
         name: "xata_createdat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_id",
@@ -112,10 +132,10 @@ const tables = [
       },
       {
         name: "xata_updatedat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_version",
@@ -167,10 +187,10 @@ const tables = [
       },
       {
         name: "xata_createdat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_id",
@@ -181,10 +201,66 @@ const tables = [
       },
       {
         name: "xata_updatedat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+      },
+    ],
+  },
+  {
+    name: "uploaded_files",
+    columns: [
+      {
+        name: "doc_id",
+        type: "link",
+        link: { table: "documents" },
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+      },
+      {
+        name: "id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('file_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "pdf",
+        type: "file",
+        file: { defaultPublicAccess: false },
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "xata_createdat",
+        type: "timestamp(6) with time zone",
+        notNull: true,
+        unique: false,
+        defaultValue: "CURRENT_TIMESTAMP",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "xata_updatedat",
+        type: "timestamp(6) with time zone",
+        notNull: true,
+        unique: false,
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_version",
@@ -235,10 +311,10 @@ const tables = [
       },
       {
         name: "xata_createdat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_id",
@@ -249,10 +325,10 @@ const tables = [
       },
       {
         name: "xata_updatedat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_version",
@@ -278,7 +354,7 @@ const tables = [
         type: "link",
         link: { table: "documents" },
         notNull: true,
-        unique: true,
+        unique: false,
         defaultValue: null,
       },
       {
@@ -296,11 +372,18 @@ const tables = [
         defaultValue: "('vec_'::text || (xata_private.xid())::text)",
       },
       {
-        name: "xata_createdat",
-        type: "datetime",
+        name: "metadata",
+        type: "json",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: null,
+      },
+      {
+        name: "xata_createdat",
+        type: "timestamp(6) with time zone",
+        notNull: true,
+        unique: false,
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_id",
@@ -311,10 +394,10 @@ const tables = [
       },
       {
         name: "xata_updatedat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_version",
@@ -387,10 +470,10 @@ const tables = [
       },
       {
         name: "xata_createdat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_id",
@@ -401,10 +484,10 @@ const tables = [
       },
       {
         name: "xata_updatedat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_version",
@@ -484,10 +567,10 @@ const tables = [
       },
       {
         name: "xata_createdat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_id",
@@ -498,10 +581,10 @@ const tables = [
       },
       {
         name: "xata_updatedat",
-        type: "datetime",
+        type: "timestamp(6) with time zone",
         notNull: true,
         unique: false,
-        defaultValue: "now()",
+        defaultValue: "CURRENT_TIMESTAMP",
       },
       {
         name: "xata_version",
@@ -520,11 +603,14 @@ export type InferredTypes = SchemaInference<SchemaTables>;
 export type Documents = InferredTypes["documents"];
 export type DocumentsRecord = Documents & XataRecord;
 
-export type Files = InferredTypes["files"];
-export type FilesRecord = Files & XataRecord;
+export type Notifications = InferredTypes["notifications"];
+export type NotificationsRecord = Notifications & XataRecord;
 
 export type Transcripts = InferredTypes["transcripts"];
 export type TranscriptsRecord = Transcripts & XataRecord;
+
+export type UploadedFiles = InferredTypes["uploaded_files"];
+export type UploadedFilesRecord = UploadedFiles & XataRecord;
 
 export type Users = InferredTypes["users"];
 export type UsersRecord = Users & XataRecord;
@@ -540,8 +626,9 @@ export type YoutubeVideosRecord = YoutubeVideos & XataRecord;
 
 export type DatabaseSchema = {
   documents: DocumentsRecord;
-  files: FilesRecord;
+  notifications: NotificationsRecord;
   transcripts: TranscriptsRecord;
+  uploaded_files: UploadedFilesRecord;
   users: UsersRecord;
   vectors: VectorsRecord;
   web_pages: WebPagesRecord;
@@ -552,7 +639,7 @@ const DatabaseClient = buildClient();
 
 const defaultOptions = {
   databaseURL:
-    "https://Mohamed-Elguarir-s-workspace-ag8fco.us-east-1.xata.sh/db/fluent-script",
+    "https://Mohamed-Elguarir-s-workspace-ag8fco.us-east-1.xata.sh/db/quantellia",
 };
 
 export class XataClient extends DatabaseClient<DatabaseSchema> {

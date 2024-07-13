@@ -21,8 +21,7 @@ import {
    SignedOut,
 } from "@clerk/nextjs";
 import { LoadingDots } from "@/components/loading-dots";
-import { client } from "@/lib/client";
-
+import Link from "next/link";
 
 type NavLink = {
    href: string;
@@ -81,10 +80,11 @@ const NavLink: React.FC<NavLink & { isActive?: boolean }> = ({
       variant={isActive ? "soft" : "ghost"}
       intent="gray"
       size="xs"
-      href={href}
       className="h-10 justify-start lg:h-7"
    >
-      <Button.Label>{label}</Button.Label>
+      <Link href={href}>
+         <Button.Label>{label}</Button.Label>
+      </Link>
    </Button.Root>
 );
 
@@ -96,10 +96,8 @@ const SiteHeader: React.FC = () => {
 
    useEffect(() => {
       // client.api.v1.documents.
-      
-      setIsMounted(true);
 
-      
+      setIsMounted(true);
    }, []);
 
    useEffect(() => {
@@ -158,12 +156,10 @@ const SiteHeader: React.FC = () => {
                            </SignInButton>
                         </SignedOut>
                         <SignedIn>
-                           <Button.Root
-                              href="/dashboard"
-                              size="sm"
-                              intent="neutral"
-                           >
-                              <Button.Label>Dashboard</Button.Label>
+                           <Button.Root size="sm" intent="neutral" asChild>
+                              <Link href="/dashboard">
+                                 <Button.Label>Dashboard</Button.Label>
+                              </Link>
                            </Button.Root>
                         </SignedIn>
 
@@ -253,12 +249,14 @@ const SiteHeader: React.FC = () => {
                   </SignedOut>
                   <SignedIn>
                      <Button.Root
-                        href="/dashboard"
                         size="xs"
                         intent="gray"
                         variant="outlined"
+                        asChild
                      >
-                        <Button.Label>Dashboard</Button.Label>
+                        <Link href="/dashboard">
+                           <Button.Label>Dashboard</Button.Label>
+                        </Link>
                      </Button.Root>
                   </SignedIn>
                   <ThemeSwitcher size="sm" />
@@ -369,8 +367,10 @@ export default function HomePage() {
                      </SignedOut>
 
                      <SignedIn>
-                        <Button.Root href="/dashboard">
-                           <Button.Label>Dashboard</Button.Label>
+                        <Button.Root>
+                           <Link href="/dashboard">
+                              <Button.Label>Dashboard</Button.Label>
+                           </Link>
                         </Button.Root>
                      </SignedIn>
                   </div>

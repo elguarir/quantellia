@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_48be896dd2b76b",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE notifications ADD CONSTRAINT notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_48be896dd2b76b",
+  "parent": "sql_7e956a36017450",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:31.050952Z"
+}

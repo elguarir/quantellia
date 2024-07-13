@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_d718c8746adfcb",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE youtube_videos (id text NOT NULL DEFAULT 'vid_'::text || xata_private.xid()::text, channel text NOT NULL, title text NOT NULL, description text, length int NOT NULL, views int, thumb text NOT NULL, link text NOT NULL, doc_id text NOT NULL, xata_id text NOT NULL DEFAULT 'rec_'::text || xata_private.xid()::text, xata_version int NOT NULL DEFAULT 0, xata_createdat timestamptz(6) NOT NULL DEFAULT current_timestamp, xata_updatedat timestamptz(6) NOT NULL DEFAULT current_timestamp, CONSTRAINT youtube_videos_pkey PRIMARY KEY (id))"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_d718c8746adfcb",
+  "parent": "sql_10760f0ce847ce",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:24.297835Z"
+}

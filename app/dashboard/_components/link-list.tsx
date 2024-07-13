@@ -5,7 +5,7 @@ import { button } from "@tailus/themer";
 import { ChevronDown } from "lucide-react";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-
+import NextLink from "next/link";
 export const Link = ({
    isActive = false,
    link,
@@ -17,7 +17,6 @@ export const Link = ({
 }) => {
    return (
       <Button.Root
-         href={link}
          variant={isActive ? "outlined" : "ghost"}
          intent="gray"
          className={twMerge(
@@ -26,7 +25,9 @@ export const Link = ({
                "bg-white dark:bg-gray-500/10 dark:!shadow-none dark:[--btn-border-color:theme(colors.transparent)]",
          )}
       >
-         <Button.Label className="text-sm">{children}</Button.Label>
+         <NextLink href={link}>
+            <Button.Label className="text-sm">{children}</Button.Label>
+         </NextLink>
       </Button.Root>
    );
 };

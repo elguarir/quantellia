@@ -22,13 +22,16 @@ export function getBaseUrl() {
 export type UploadFunctionProps = {
    file: File;
    url: string;
+   onStart?: () => void;
    onProgress: (progress: number) => void;
    onError: (error: Error) => void;
+   onSuccess?: () => void;
 };
 
 export const uploadFile = async (props: UploadFunctionProps) => {
    try {
-      const response = await axios.put(props.url, props.file, {
+      props.onStart?.();
+      await axios.put(props.url, props.file, {
          onUploadProgress: (progressEvent) => {
             if (progressEvent.total !== undefined) {
                const progress = Math.round(
@@ -38,6 +41,7 @@ export const uploadFile = async (props: UploadFunctionProps) => {
             }
          },
       });
+      props.onSuccess?.();
       return { success: true };
    } catch (error) {
       if (error instanceof Error) {

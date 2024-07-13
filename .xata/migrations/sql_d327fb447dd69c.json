@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_d327fb447dd69c",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE uploaded_files (id text NOT NULL DEFAULT 'file_'::text || xata_private.xid()::text, doc_id text NOT NULL, xata_updatedat timestamptz(6) NOT NULL DEFAULT current_timestamp, xata_id text NOT NULL DEFAULT 'rec_'::text || xata_private.xid()::text, xata_version int NOT NULL DEFAULT 0, xata_createdat timestamptz(6) NOT NULL DEFAULT current_timestamp, CONSTRAINT files_pkey PRIMARY KEY (id))"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_d327fb447dd69c",
+  "parent": "sql_425c47047a36f9",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:25.470714Z"
+}

@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_f3d98a757f1f05",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX transcripts__pgroll_new_xata_id_key ON transcripts USING btree (xata_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_f3d98a757f1f05",
+  "parent": "sql_f1bf90757cd4c3",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:28.014466Z"
+}

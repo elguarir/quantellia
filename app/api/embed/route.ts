@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Replicate from "replicate";
 import { embed } from "ai";
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
+import { embedTexts } from "@/lib/helpers";
 
 // const google = createGoogleGenerativeAI();
 const replicate = new Replicate({
@@ -11,14 +12,7 @@ const replicate = new Replicate({
 export async function POST(request: NextRequest) {
    const { texts } = await request.json();
 
-   const output = await replicate.run(
-      "replicate/all-mpnet-base-v2:b6b7585c9640cd7a9572c6e129c9549d79c9c31f0d3fdce7baac7c67ca38f305",
-      {
-         input: {
-            text_batch: JSON.stringify(texts),
-         },
-      },
-   );
+   let output = await embedTexts(texts)
 
    return NextResponse.json(output);
 }

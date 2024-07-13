@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_570a937c8afeff",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX uploaded_files__pgroll_new_xata_id_key ON uploaded_files USING btree (xata_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_570a937c8afeff",
+  "parent": "sql_4fc09968e67b8d",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:28.398554Z"
+}

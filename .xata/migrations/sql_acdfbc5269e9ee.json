@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_acdfbc5269e9ee",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX vectors__pgroll_new_xata_id_key ON vectors USING btree (xata_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_acdfbc5269e9ee",
+  "parent": "sql_8b7bd269e5cc63",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:26.86269Z"
+}

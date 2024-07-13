@@ -21,8 +21,8 @@ export const addYoutubeVideoSchema = z.object({
 const MAX_FILE_SIZE = 20000000;
 
 export const uploadFileSchema = z.object({
-   file: z
-      .instanceof(File)
+   pdf: z
+      .instanceof(File, { message: "Required" })
       .refine((value) => value.size < MAX_FILE_SIZE, {
          message: "File is too large",
       })

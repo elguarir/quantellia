@@ -1,0 +1,27 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq8st0ma437rsaqn431g",
+    "operations": [
+      {
+        "add_column": {
+          "up": "'{}'",
+          "table": "uploaded_files",
+          "column": {
+            "pk": false,
+            "name": "pdf",
+            "type": "xata.xata_file",
+            "unique": false,
+            "comment": "{\"xata.file.dpa\":false}",
+            "nullable": false
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq8st0ma437rsaqn431g",
+  "parent": "sql_48be896dd2b76b",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:59.562237Z"
+}

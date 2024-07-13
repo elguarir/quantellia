@@ -1,0 +1,31 @@
+{
+  "done": true,
+  "migration": {
+    "name": "mig_cq8st717994ud4f9rr9g",
+    "operations": [
+      {
+        "add_column": {
+          "up": "'{}'",
+          "table": "vectors",
+          "column": {
+            "pk": false,
+            "name": "embedding",
+            "type": "real[]",
+            "check": {
+              "name": "vectors_xata_vector_length_embedding",
+              "constraint": "ARRAY_LENGTH(\"embedding\", 1) = 768"
+            },
+            "unique": false,
+            "comment": "{\"xata.search.dimension\":768}",
+            "nullable": false
+          }
+        }
+      }
+    ]
+  },
+  "migrationType": "pgroll",
+  "name": "mig_cq8st717994ud4f9rr9g",
+  "parent": "mig_cq8st0ma437rsaqn431g",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:47:25.625485Z"
+}

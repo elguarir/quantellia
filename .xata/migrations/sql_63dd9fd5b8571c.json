@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_63dd9fd5b8571c",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX web_pages_doc_id_key ON web_pages USING btree (doc_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_63dd9fd5b8571c",
+  "parent": "sql_51301d7bcb682e",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:27.454175Z"
+}

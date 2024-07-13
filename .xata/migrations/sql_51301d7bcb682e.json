@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_51301d7bcb682e",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX youtube_videos__pgroll_new_xata_id_key ON youtube_videos USING btree (xata_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_51301d7bcb682e",
+  "parent": "sql_ab58a6a61f663c",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:27.261347Z"
+}

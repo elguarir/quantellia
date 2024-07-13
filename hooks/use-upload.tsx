@@ -48,7 +48,7 @@ type UploadOptions = {
 type UseUploadReturnType<T extends "single" | "multiple"> = T extends "single"
    ? {
         file: FileItem | undefined;
-        startUpload: (uploadUrl: string) => void;
+        startUpload: (uploadUrl: string) => Promise<void>;
         isUploading: boolean;
         clear: () => void;
         onChange: (file: File) => void;
@@ -56,7 +56,7 @@ type UseUploadReturnType<T extends "single" | "multiple"> = T extends "single"
    : {
         files: FileItem[];
         isUploading: boolean;
-        startUpload: (uploadUrl: string) => void;
+        startUpload: (uploadUrl: string) => Promise<void>;
         clear: () => void;
         onChange: (files: File[]) => void;
      };
@@ -70,14 +70,14 @@ const useUpload = <T extends "single" | "multiple">(
    const [previews, setPreviews] = useState<string[]>([]);
 
    const uploadFiles = useCallback(
-      (fileItems: FileItem[], uploadUrl?: string) => {
+      async (fileItems: FileItem[], uploadUrl?: string) => {
          console.log("Uploading files", fileItems);
          setIsUploading(true);
          if (!uploadUrl) {
             console.log("No upload url");
             return;
          }
-         Promise.all(
+         await Promise.all(
             fileItems.map((fileItem) => {
                if (fileItem.status === "idle") {
                   setFiles((prev) =>
@@ -129,9 +129,13 @@ const useUpload = <T extends "single" | "multiple">(
                }
                return Promise.resolve();
             }),
-         ).finally(() => {
-            setIsUploading(false);
-         });
+         )
+            .catch((error) => {
+               console.log("Error uploading files", error);
+            })
+            .finally(() => {
+               setIsUploading(false);
+            });
       },
       [setIsUploading, setFiles, uploadFile],
    );
@@ -175,10 +179,10 @@ const useUpload = <T extends "single" | "multiple">(
    );
 
    const startUpload = useCallback(
-      (uploadUrl: string) => {
+      async (uploadUrl: string) => {
          let filesToUpload = files.filter((f) => f.status === "idle");
          if (filesToUpload.length > 0) {
-            uploadFiles(filesToUpload, uploadUrl);
+            await uploadFiles(filesToUpload, uploadUrl);
          }
       },
       [files, uploadFiles],

@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_c27e6334059560",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE web_pages (id text NOT NULL DEFAULT 'page_'::text || xata_private.xid()::text, doc_id text NOT NULL, title text NOT NULL, description text, favicon text, banner text, link text NOT NULL, text text, xata_version int NOT NULL DEFAULT 0, xata_createdat timestamptz(6) NOT NULL DEFAULT current_timestamp, xata_updatedat timestamptz(6) NOT NULL DEFAULT current_timestamp, xata_id text NOT NULL DEFAULT 'rec_'::text || xata_private.xid()::text, CONSTRAINT web_pages_pkey PRIMARY KEY (id))"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_c27e6334059560",
+  "parent": "sql_d718c8746adfcb",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:24.693031Z"
+}

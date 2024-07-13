@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_0d7c87f58b175d",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE vectors ADD CONSTRAINT vectors_doc_id_fkey FOREIGN KEY (doc_id) REFERENCES documents (id) ON UPDATE CASCADE ON DELETE CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_0d7c87f58b175d",
+  "parent": "sql_2318a7c3879e21",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:29.132708Z"
+}

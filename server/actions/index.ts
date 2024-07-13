@@ -42,7 +42,7 @@ export const addYoutubeVideo = authedProcedure
       });
 
       await inngest.send({
-         name: "youtube/video.process",
+         name: "video.process",
          data: {
             docId: res.docId,
          },
@@ -58,7 +58,7 @@ export const generateUploadUrl = authedProcedure
    .createServerAction()
    .input(uploadFileSchema, { type: "formData" })
    .handler(async ({ input, ctx }) => {
-      const { file } = input;
+      const { pdf } = input;
       const xata = getXataClient();
 
       const doc = await db.document.create({
@@ -72,26 +72,58 @@ export const generateUploadUrl = authedProcedure
          },
       });
 
-      const createdFile = await xata.db.files.create(
+      const createdFile = await xata.db.uploaded_files.create(
          {
             doc_id: doc.id,
-            file: {
-               name: encodeURI(file.name),
-               mediaType: file.type,
-               size: file.size,
+            pdf: {
+               name: encodeURI(pdf.name),
+               mediaType: pdf.type,
+               size: pdf.size,
                base64Content: "",
+               uploadUrlTimeout: 3600,
             },
          },
-         ["file.uploadUrl"],
+         ["pdf.uploadUrl"],
       );
 
-      if (!createdFile.file.uploadUrl) {
+      if (!createdFile.pdf.uploadUrl) {
          throw new Error("Failed to create upload url");
       }
 
       return {
          success: true,
-         url: createdFile.file.uploadUrl,
+         url: createdFile.pdf.uploadUrl,
          docId: doc.id,
+      };
+   });
+
+export const sendFileForProcessing = authedProcedure
+   .createServerAction()
+   .input(
+      z.object({
+         docId: z.string(),
+      }),
+   )
+   .handler(async ({ input }) => {
+      const doc = await db.document.findUnique({
+         where: {
+            id: input.docId,
+         },
+      });
+
+      if (!doc) {
+         throw new Error("Document not found, or hasen't been uploaded yet");
+      }
+
+      const { ids } = await inngest.send({
+         name: "file.process",
+         data: {
+            docId: doc.id,
+         },
+      });
+
+      return {
+         success: true,
+         ids,
       };
    });

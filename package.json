@@ -9,7 +9,7 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "db:push": "prisma db push",
-    "xata:sync": "xata pull main --skip-code-generation && xata codegen --branch=main --output=lib/xata.ts",
+    "xata:sync": "xata pull main",
     "db:pull": "prisma db pull",
     "db:generate": "prisma generate",
     "postinstall": "prisma generate"

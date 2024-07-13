@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_5257400f1fdf31",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE notifications (id text NOT NULL DEFAULT 'not_'::text || xata_private.xid()::text, user_id text NOT NULL, title text NOT NULL, message text NOT NULL, \"goLink\" text, is_read boolean NOT NULL DEFAULT false, xata_version int NOT NULL DEFAULT 0, xata_createdat timestamptz(6) NOT NULL DEFAULT current_timestamp, xata_updatedat timestamptz(6) NOT NULL DEFAULT current_timestamp, xata_id text NOT NULL DEFAULT 'rec_'::text || xata_private.xid()::text, CONSTRAINT notifications_pkey PRIMARY KEY (id))"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_5257400f1fdf31",
+  "parent": "sql_d327fb447dd69c",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:25.881086Z"
+}

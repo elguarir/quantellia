@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_5ad2feae84d3ff",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TYPE \"ProcessingStatus\" AS ENUM ('PENDING', 'IN_PROGRESS', 'PROCESSED', 'FAILED')"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_5ad2feae84d3ff",
+  "parent": "mig_cq8srip7994ud4f9rr90",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:22.682618Z"
+}

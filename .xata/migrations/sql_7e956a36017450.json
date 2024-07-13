@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_7e956a36017450",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE uploaded_files ADD CONSTRAINT files_doc_id_fkey FOREIGN KEY (doc_id) REFERENCES documents (id) ON UPDATE CASCADE ON DELETE CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_7e956a36017450",
+  "parent": "sql_b20a2847e7db62",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:30.708111Z"
+}

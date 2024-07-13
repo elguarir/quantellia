@@ -1,7 +1,7 @@
 import { Button } from "@/tailus-ui/button";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-
+import NextLink from "next/link";
 
 export const Link = ({
    isActive = false,
@@ -16,7 +16,6 @@ export const Link = ({
 }) => {
    return (
       <Button.Root
-         href={link}
          variant={isActive ? "outlined" : "ghost"}
          intent="gray"
          className={twMerge(
@@ -25,11 +24,14 @@ export const Link = ({
                "bg-white dark:bg-gray-500/10 dark:!shadow-none dark:[--btn-border-color:theme(colors.transparent)]",
          )}
          aria-label={label}
+         asChild
       >
-         <Button.Icon size="sm" type="leading">
-            {children}
-         </Button.Icon>
-         <Button.Label className="text-sm">{label}</Button.Label>
+         <NextLink href={link}>
+            <Button.Icon size="sm" type="leading">
+               {children}
+            </Button.Icon>
+            <Button.Label className="text-sm">{label}</Button.Label>
+         </NextLink>
       </Button.Root>
    );
 };
@@ -44,7 +46,6 @@ export const Root = ({
    link: string;
 }) => (
    <Button.Root
-      href={link}
       variant={isActive ? "outlined" : "ghost"}
       intent="gray"
       className={twMerge(
@@ -52,8 +53,9 @@ export const Root = ({
          isActive &&
             "bg-white dark:bg-gray-500/10 dark:!shadow-none dark:[--btn-border-color:theme(colors.transparent)]",
       )}
+      asChild
    >
-      {children}
+      <NextLink href={link}>{children}</NextLink>
    </Button.Root>
 );
 

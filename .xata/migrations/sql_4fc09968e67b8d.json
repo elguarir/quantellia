@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_4fc09968e67b8d",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX files_doc_id_key ON uploaded_files USING btree (doc_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_4fc09968e67b8d",
+  "parent": "sql_f3d98a757f1f05",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:28.210858Z"
+}

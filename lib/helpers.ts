@@ -2,6 +2,7 @@ import axios from "axios";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import TurndownService from "turndown";
+import Replicate from "replicate";
 
 export const getIdFromVideoLink = (link: string) => {
    let regex =
@@ -149,4 +150,23 @@ export const parseWebPage = async (url: URL): Promise<parseWebPageResponse> => {
       favicon,
       content,
    };
+};
+
+
+export const embedTexts = async (texts: string[]) => {
+   const replicate = new Replicate({
+      auth: process.env.REPLICATE_API_TOKEN,
+   });
+
+   const output = (await replicate.run(
+      "replicate/all-mpnet-base-v2:b6b7585c9640cd7a9572c6e129c9549d79c9c31f0d3fdce7baac7c67ca38f305",
+      {
+         input: {
+            text_batch: JSON.stringify(texts),
+         },
+      },
+   )) as { embedding: number[] }[];
+   return output.map((item) => {
+      return item.embedding;
+   });
 };

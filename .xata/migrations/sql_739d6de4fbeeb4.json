@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_739d6de4fbeeb4",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TYPE \"DocumentType\" AS ENUM ('YoutubeVideo', 'File', 'WebPage')"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_739d6de4fbeeb4",
+  "parent": "sql_5ad2feae84d3ff",
+  "schema": "public",
+  "startedAt": "2024-07-13T00:46:22.878426Z"
+}

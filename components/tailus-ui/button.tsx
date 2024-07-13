@@ -1,4 +1,5 @@
 import React from "react";
+import { Slot } from "@radix-ui/react-slot";
 import { cloneElement } from "@/lib/utils";
 import {
    button,
@@ -6,16 +7,15 @@ import {
    type ButtonProps as ButtonVariantsProps,
    type ButtonIconProps,
 } from "@tailus/themer";
-import NextLink from "next/link";
+
 export type Root = typeof Root;
 export type Icon = typeof Icon;
 export type Label = typeof Label;
 
 export interface ButtonProps
-   extends React.HTMLAttributes<HTMLButtonElement | HTMLAnchorElement>,
+   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
       ButtonVariantsProps {
-   disabled?: boolean;
-   href?: string;
+   asChild?: boolean;
 }
 
 export interface IconProps
@@ -49,24 +49,20 @@ export const Label = React.forwardRef<
    );
 });
 
-export const Root = React.forwardRef<
-   HTMLButtonElement & HTMLAnchorElement,
-   ButtonProps
->(
+export const Root = React.forwardRef<HTMLButtonElement, ButtonProps>(
    (
       {
          className,
          intent = "primary",
          variant = "solid",
          size = "md",
-         disabled,
-         href,
          children,
+         asChild = false,
          ...props
       },
       forwardedRef,
    ) => {
-      const Component = href ? NextLink : "button";
+      const Component = asChild ? Slot : "button";
       const iconOnly = React.Children.toArray(children).some(
          (child) =>
             React.isValidElement(child) &&
@@ -78,14 +74,12 @@ export const Root = React.forwardRef<
       return (
          <Component
             ref={forwardedRef}
-            href={href ?? "#"}
             className={button[variant as keyof typeof button]({
                intent,
                [buttonSize]: size,
                className,
             })}
             {...props}
-            disabled={disabled}
          >
             {children}
          </Component>
