@@ -70,6 +70,7 @@
     "langchain": "^0.2.8",
     "lucide-react": "^0.400.0",
     "next": "^14.2.5",
+    "next-nprogress-bar": "^2.3.13",
     "next-themes": "^0.3.0",
     "nuqs": "^1.17.4",
     "openai": "^4.52.2",
