@@ -1,5 +1,6 @@
 import { EventSchemas, Inngest, InngestMiddleware } from "inngest";
 import { db } from "@/lib/db";
+import { Paragraph } from "@/prisma";
 
 // make Prisma available in the Inngest functions
 const prismaMiddleware = new InngestMiddleware({
@@ -45,6 +46,7 @@ type TranscriptionCompleted = {
       request_id: string;
       text: string;
       confidence: number;
+      paragraphs: Paragraph[]
    };
 };
 

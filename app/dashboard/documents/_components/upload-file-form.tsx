@@ -33,9 +33,21 @@ import { Loader2 } from "lucide-react";
 import { ComponentProps, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { MAX_FILE_SIZE } from "@/lib/constants";
 interface UploadFileFormProps {
    onSuccess?: () => void;
 }
+
+const formSchema = z.object({
+   pdf: z
+      .instanceof(File, { message: "Required" })
+      .refine((value) => value.size < MAX_FILE_SIZE, {
+         message: "File is too large",
+      })
+      .refine((value) => value.type.startsWith("application/pdf"), {
+         message: "Only PDF files are allowed.",
+      }),
+});
 
 export default function UploadFileForm(p: UploadFileFormProps) {
    const [progress, setProgress] = useState<number | null>(null);
@@ -45,19 +57,18 @@ export default function UploadFileForm(p: UploadFileFormProps) {
       useServerAction(generateUploadUrl);
    const { execute: sendForProcessing, isPending: isSendingForProcessing } =
       useServerAction(sendFileForProcessing);
-
    const isPending = isGenerating || isSendingForProcessing || isUploading;
 
-   const form = useForm<z.infer<typeof uploadFileSchema>>({
-      resolver: zodResolver(uploadFileSchema),
+   const form = useForm<z.infer<typeof formSchema>>({
+      resolver: zodResolver(formSchema),
    });
 
-   const onSubmit = async (values: z.infer<typeof uploadFileSchema>) => {
-      const formData = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
-         formData.append(key, value);
+   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+      const [data, err] = await generateUrl({
+         name: values.pdf.name,
+         size: values.pdf.size,
+         type: values.pdf.type,
       });
-      const [data, err] = await generateUrl(formData);
       if (err) {
          toast.error(err.message);
          return;
@@ -69,7 +80,7 @@ export default function UploadFileForm(p: UploadFileFormProps) {
             file: values.pdf,
             url: data.url,
             onError: (err) => {
-              toast.error(err.message);
+               toast.error(err.message);
             },
             onProgress: (progress) => {
                setProgress(progress);

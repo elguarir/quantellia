@@ -171,6 +171,13 @@ const tables = [
         defaultValue: null,
       },
       {
+        name: "paragraphs",
+        type: "json",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
         name: "summary",
         type: "text",
         notNull: false,

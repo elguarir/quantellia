@@ -45,6 +45,9 @@ const VideoCard = ({ video, status, docId, archived }: VideoCardProps) => {
    } = useServerAction(performActionOnDocument, {
       onSuccess: ({ data }) => {
          setOpen(false);
+         if (data.action === "delete") {
+            toast.success(data.message);
+         }
          router.refresh();
       },
       onError: ({ err }) => {
@@ -227,19 +230,7 @@ const VideoCard = ({ video, status, docId, archived }: VideoCardProps) => {
                            intent="danger"
                            size="sm"
                            onClick={() => {
-                              toast.promise(
-                                 performAction({ action: "delete", docId }),
-                                 {
-                                    loading: "Deleting...",
-                                    success(data) {
-                                       const [res, err] = data;
-                                       return res?.message;
-                                    },
-                                    error() {
-                                       return error?.message;
-                                    },
-                                 },
-                              );
+                              performAction({ action: "delete", docId });
                            }}
                            className="min-w-fit px-3 disabled:dark:text-gray-300"
                         >

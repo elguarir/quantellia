@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import ClerkProvider from "@/components/providers/clerk-provider";
 import QueryClientProvider from "@/components/providers/query-client-provider";
 import { Toaster } from "@/components/ui/sonner";
-
+import { TooltipProvider } from "@/components/tailus-ui/tooltip";
 export const metadata: Metadata = {
    title: "Quantellia",
 };
@@ -34,7 +34,7 @@ export default function RootLayout({
             <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
                <ClerkProvider>
                   <QueryClientProvider>
-                     {children}
+                     <TooltipProvider>{children}</TooltipProvider>
                      <Toaster closeButton duration={1750} />
                   </QueryClientProvider>
                </ClerkProvider>

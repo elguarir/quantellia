@@ -14,6 +14,7 @@ const webhooks = new Hono().post("/deepgram", async (c) => {
             body.results.channels[0].alternatives[0].transcript,
          request_id: body.metadata.request_id,
          confidence: body.results.channels[0].alternatives[0].confidence,
+         paragraphs: body.results.channels[0].alternatives[0].paragraphs?.paragraphs ?? []
       },
    });
    return c.json({ success: true, ids: res.ids });

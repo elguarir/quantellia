@@ -81,3 +81,10 @@ export function decodeDoubleEncodedUriComponent(encodedStr: string) {
    const fullyDecoded = buffer.toString("utf8");
    return fullyDecoded;
 }
+
+
+export const getIdFromVideoLink = (link: string) => {
+   let regex =
+      /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm;
+   return regex.exec(link)![3];
+};

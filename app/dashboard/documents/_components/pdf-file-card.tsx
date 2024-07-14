@@ -45,6 +45,9 @@ const PdfFileCard = ({
       error,
    } = useServerAction(performActionOnDocument, {
       onSuccess: ({ data }) => {
+         if (data.action === "delete") {
+            toast.success(data.message);
+         }
          setOpen(false);
          router.refresh();
       },
@@ -225,19 +228,7 @@ const PdfFileCard = ({
                            disabled={isPending}
                            className="min-w-fit px-3"
                            onClick={() => {
-                              toast.promise(
-                                 performAction({ action: "delete", docId }),
-                                 {
-                                    loading: "Deleting...",
-                                    success(data) {
-                                       const [res, err] = data;
-                                       return res?.message;
-                                    },
-                                    error() {
-                                       return error?.message;
-                                    },
-                                 },
-                              );
+                              performAction({ action: "delete", docId });
                            }}
                         >
                            {isPending && (

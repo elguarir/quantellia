@@ -40,3 +40,5 @@ export enum Types {
    File = "files",
    WebPage = "web_pages",
 }
+
+export const MAX_FILE_SIZE = 20000000;

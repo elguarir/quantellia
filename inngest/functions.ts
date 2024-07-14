@@ -1,10 +1,7 @@
 import { dg } from "@/lib/deepgram";
 import { inngest } from "./client";
-import {
-   embedTexts,
-   getIdFromVideoLink,
-   getYoutubeVideoUrl,
-} from "@/lib/helpers";
+import { embedTexts, getYoutubeVideoUrl } from "@/lib/helpers";
+import { getIdFromVideoLink } from "@/lib/utils";
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 import { CallbackUrl } from "@deepgram/sdk";
@@ -54,6 +51,7 @@ export const processVideo = inngest.createFunction(
                   smart_format: true,
                   model: "nova-2",
                   punctuate: true,
+                  paragraphs: true,
                },
             );
 
@@ -143,7 +141,7 @@ export const completeTranscription = inngest.createFunction(
                ],
             }),
             system: `You are a helpful assistant,
-                  your task is to summarize for this video transcript, ensure to use markdown formmating, in the summary you should include the main points of the video, in a nice and concise manner. also incldue a TLDR section at the end, in a nice bullet point format.
+                  your task is to summarize for this video transcript, ensure to use markdown formmating, you can also use the <mark></mark> to highlight important keywords, only if necessary (don't over use it) in the summary you should include the main points of the video, in a nice and concise manner. also incldue a TLDR section at the end, in a nice bullet point format.
                `,
             messages: [
                {
@@ -165,6 +163,7 @@ export const completeTranscription = inngest.createFunction(
                text: event.data.text,
                confidence: event.data.confidence,
                summary: result.text,
+               paragraphs: event.data.paragraphs,
             },
          });
       });

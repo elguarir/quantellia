@@ -4,11 +4,7 @@ import { JSDOM } from "jsdom";
 import TurndownService from "turndown";
 import Replicate from "replicate";
 
-export const getIdFromVideoLink = (link: string) => {
-   let regex =
-      /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm;
-   return regex.exec(link)![3];
-};
+
 
 /**
  * Retrieves the audio URL for a given YouTube video URL.

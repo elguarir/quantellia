@@ -101,7 +101,7 @@
 
 @layer base {
    * {
-      @apply border-border;
+      @apply border-border selection:bg-primary-600 dark:selection:bg-primary-500 selection:text-primary-100;
       scrollbar-width: thin;
    }
 

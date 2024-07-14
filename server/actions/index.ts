@@ -2,7 +2,8 @@
 
 import { addYoutubeVideoSchema, uploadFileSchema } from "@/lib/schemas.ts";
 import { authedProcedure } from "./procedures";
-import { getIdFromVideoLink, getYoutubeVideoDetails } from "@/lib/helpers";
+import {  getYoutubeVideoDetails } from "@/lib/helpers";
+import { getIdFromVideoLink } from "@/lib/utils";
 import { db } from "@/lib/db";
 import { inngest } from "@/inngest";
 import { z } from "zod";
@@ -53,9 +54,9 @@ export const addYoutubeVideo = authedProcedure
 
 export const generateUploadUrl = authedProcedure
    .createServerAction()
-   .input(uploadFileSchema, { type: "formData" })
+   .input(uploadFileSchema)
    .handler(async ({ input, ctx }) => {
-      const { pdf } = input;
+      const { name, size, type, docId } = input;
       const xata = getXataClient();
 
       const doc = await db.document.create({
@@ -73,9 +74,9 @@ export const generateUploadUrl = authedProcedure
          {
             doc_id: doc.id,
             pdf: {
-               name: encodeURI(pdf.name),
-               mediaType: pdf.type,
-               size: pdf.size,
+               name: encodeURI(name),
+               mediaType: type,
+               size: size,
                base64Content: "",
                uploadUrlTimeout: 3600,
                signedUrlTimeout: 3600 * 4, // 4 hours
@@ -196,6 +197,8 @@ export const performActionOnDocument = authedProcedure
             });
             return {
                success: true,
+               action: input.action,
+
                message: "Document archived successfully",
             };
          } else if (input.action === "delete") {
@@ -207,6 +210,7 @@ export const performActionOnDocument = authedProcedure
 
             return {
                success: true,
+               action: input.action,
                message: "Document deleted successfully",
             };
          } else if (input.action === "restore") {
@@ -221,6 +225,7 @@ export const performActionOnDocument = authedProcedure
 
             return {
                success: true,
+               action: input.action,
                message: "Document restored successfully",
             };
          }

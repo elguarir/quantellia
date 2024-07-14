@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_4e66a19c8d59c9",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE transcripts ADD COLUMN paragraphs jsonb"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_4e66a19c8d59c9",
+  "parent": "sql_40caee1a1498ff",
+  "schema": "public",
+  "startedAt": "2024-07-14T01:16:30.753839Z"
+}
