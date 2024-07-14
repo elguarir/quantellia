@@ -59,7 +59,7 @@ const VideoCard = ({ video, status, docId, archived }: VideoCardProps) => {
       <div className="flex flex-col">
          <header className="space-y-1">
             <div className="flex w-full items-start justify-between gap-2">
-               <div className="line-clamp-2">
+               <div className="line-clamp-1">
                   <Title as="h3" className="text-lg">
                      {video?.title}
                   </Title>
@@ -220,7 +220,7 @@ const VideoCard = ({ video, status, docId, archived }: VideoCardProps) => {
                               variant="outlined"
                               intent="gray"
                               size="sm"
-                              className="transition-colors"
+                              className="transition-colors disabled:dark:text-gray-400"
                            >
                               <Button.Label>Cancel</Button.Label>
                            </Button.Root>
@@ -232,7 +232,7 @@ const VideoCard = ({ video, status, docId, archived }: VideoCardProps) => {
                            onClick={() => {
                               performAction({ action: "delete", docId });
                            }}
-                           className="min-w-fit px-3 disabled:dark:text-gray-300"
+                           className="min-w-fit px-3 disabled:dark:text-gray-400"
                         >
                            {isPending && (
                               <Button.Icon className="mr-1" type="only">

@@ -15,6 +15,7 @@ import SearchBar from "./_components/search-bar";
 import { Types } from "@/lib/constants";
 import { parseAsArrayOf, parseAsStringEnum } from "nuqs";
 import DocumentsGrid from "./_components/documents-grid";
+import EmptyDocuments from "./_components/empty";
 
 interface DashboardPageProps {
    searchParams: {
@@ -77,9 +78,16 @@ const DashboardPage = async (p: DashboardPageProps) => {
                      <FilterMenu defaultFilter={filterValue ?? []} />
                   </div>
                </div>
-               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  <DocumentsGrid initialDocs={docs} filterValue={filterValue} />
-               </div>
+               {docs.length === 0 ? (
+                  <EmptyDocuments />
+               ) : (
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                     <DocumentsGrid
+                        initialDocs={docs}
+                        filterValue={filterValue}
+                     />
+                  </div>
+               )}
             </div>
          </div>
       </PageWrapper>

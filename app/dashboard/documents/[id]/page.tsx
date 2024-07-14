@@ -67,7 +67,7 @@ const DashboardPage = async (p: DashboardPageProps) => {
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                     <BreadcrumbLink href="/documents">
+                     <BreadcrumbLink href="/dashboard/documents">
                         Documents
                      </BreadcrumbLink>
                   </BreadcrumbItem>
@@ -93,7 +93,7 @@ const DashboardPage = async (p: DashboardPageProps) => {
                      <Button.Icon>
                         <MessageCircleDashed />
                      </Button.Icon>
-                     <Button.Label>Chat with me</Button.Label>
+                     <Button.Label>Ask AI</Button.Label>
                   </Button.Root>
                </div>
             </div>
@@ -102,42 +102,35 @@ const DashboardPage = async (p: DashboardPageProps) => {
                   <div className="aspect-video w-full overflow-hidden rounded-lg">
                      <iframe
                         width="100%"
-                        src={`https://www.youtube.com/embed/${getIdFromVideoLink(doc.youtubeVideo?.link ?? "")}`}
+                        src={`https://www.youtube.com/embed/${videoId}`}
                         title={doc.youtubeVideo?.title}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         className="aspect-video"
                         allowFullScreen
                      ></iframe>
                   </div>
-                  <div className="flex w-full items-start justify-between gap-2">
+                  <div className="flex w-full flex-wrap items-start justify-between gap-2">
                      <h1 className="text-2xl font-semibold">
                         {doc.youtubeVideo?.title}
                      </h1>
-                     {doc.youtubeVideo?.views && (
-                        <Badge variant="outlined" intent="gray">
-                           <div className="flex items-center gap-2">
-                              <BarChart className="size-4" />
-                              <span>
-                                 {doc.youtubeVideo?.views?.toLocaleString()}{" "}
-                                 views
-                              </span>
-                           </div>
-                        </Badge>
-                     )}
-                     {/* <Button.Root
-                        variant="outlined"
-                        intent="gray"
-                        size="xs"
-                        className="min-w-7"
-                        asChild
-                     >
-                        <a href={doc.youtubeVideo?.link} target="_blank">
-                           <Button.Label>View on YouTube</Button.Label>
-                           <Button.Icon type="trailing">
-                              <ExternalLinkIcon />
-                           </Button.Icon>
-                        </a>
-                     </Button.Root> */}
+                     <div className="flex items-center gap-2">
+                        {doc.youtubeVideo?.views && (
+                           <Badge variant="outlined" intent="gray">
+                              <div className="flex items-center gap-2">
+                                 <BarChart className="size-4" />
+                                 <span>
+                                    {doc.youtubeVideo?.views?.toLocaleString()}{" "}
+                                    views
+                                 </span>
+                              </div>
+                           </Badge>
+                        )}
+                        {doc.youtubeVideo?.channel && (
+                           <Badge variant="soft" intent="primary">
+                              {doc.youtubeVideo?.channel}
+                           </Badge>
+                        )}
+                     </div>
                   </div>
                </div>
                <div className="w-full xl:w-1/3">
@@ -159,7 +152,7 @@ const DashboardPage = async (p: DashboardPageProps) => {
                               <span>Summary</span>
                            </div>
                         </AccordianTrigger>
-                        <AccordianContent className="prose-sm lg:prose-base dark:prose-invert prose-violet prose-p:my-0 prose-h2:mt-3 prose-h2:mb-1 prose-li:-my-1 prose-li:leading-tight prose-ul:list-disc prose-ol:list-decimal prose-ul:-mt-5 prose-ol:-mt-5 overflow-y-auto whitespace-pre-wrap px-6 xl:max-h-[calc(100dvh-350px)] [&_mark]:bg-primary-600 [&_mark]:text-primary-foreground">
+                        <AccordianContent className="prose-sm prose-violet overflow-y-auto whitespace-pre-wrap px-6 dark:prose-invert lg:prose-base prose-h2:mb-1 prose-h2:mt-3 prose-p:my-0 prose-ol:-mt-5 prose-ol:list-decimal prose-ul:my-0 prose-ul:list-disc prose-li:-my-1 prose-li:leading-tight xl:max-h-[calc(100dvh-350px)] [&_mark]:bg-primary-600 [&_mark]:text-primary-foreground">
                            <Markdown
                               content={
                                  doc.youtubeVideo?.transcript?.summary ?? ""
@@ -208,7 +201,7 @@ const DashboardPage = async (p: DashboardPageProps) => {
                               )}
                            </div>
                         </AccordianTrigger>
-                        <AccordianContent className="prose-sm lg:prose-base dark:prose-invert prose-violet overflow-y-auto px-6 xl:max-h-[calc(100dvh-350px)]">
+                        <AccordianContent className="prose-sm prose-violet overflow-y-auto px-6 dark:prose-invert lg:prose-base xl:max-h-[calc(100dvh-350px)]">
                            <p className="!mt-0 whitespace-pre-wrap">
                               {doc.youtubeVideo?.transcript?.text}
                            </p>

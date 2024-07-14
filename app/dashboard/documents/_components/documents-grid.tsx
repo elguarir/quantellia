@@ -6,6 +6,7 @@ import VideoCard from "./video-card";
 import { Prisma } from "@prisma/client";
 import { Types } from "@/lib/constants";
 import { useRouter } from "next/navigation";
+import { Caption, Kbd, Title } from "@/components/tailus-ui/typography";
 
 type Props = {
    initialDocs: Prisma.DocumentGetPayload<{
@@ -49,6 +50,21 @@ const DocumentsGrid = ({ initialDocs, filterValue }: Props) => {
    }, [filteredDocs]);
    return (
       <>
+         {filteredDocs.length === 0 && (
+            <div className="col-span-full flex min-h-56 w-full flex-col items-center justify-center text-balance">
+               <Title>
+                  No documents found, try adding one{" "}
+                  <span role="img" aria-label="smiley">
+                     😊
+                  </span>
+               </Title>
+               <Caption>
+                  Try changing the selected filters or add a new document by
+                  clicking
+                  <Kbd>N</Kbd>
+               </Caption>
+            </div>
+         )}
          {filteredDocs.map((doc) => (
             <Card className="p-[1.2rem]">
                {doc.type === "YoutubeVideo" && (

@@ -45,14 +45,14 @@ const NotFound = () => {
             <div className="flex flex-col items-center space-y-3">
                <NotFoundIllustration className="w-full" />
                <p className="text-lg font-semibold">Document not found</p>
-               {/* <Button.Root asChild variant="outlined" intent="gray">
+               <Button.Root asChild variant="outlined" intent="gray">
                   <Link href={"/dashboard/documents"}>
                      <Button.Icon type="leading">
                         <ArrowLeftIcon />
                      </Button.Icon>
                      <Button.Label>Go back</Button.Label>
                   </Link>
-               </Button.Root> */}
+               </Button.Root>
             </div>
          </div>
       </PageWrapper>
