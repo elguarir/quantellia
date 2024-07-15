@@ -5,7 +5,6 @@ import remarkRehype from "remark-rehype";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 
-
 const Markdown = async ({ content }: { content: string }) => {
    const html = await unified()
       .use(remarkParse)

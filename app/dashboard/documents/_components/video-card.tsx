@@ -12,6 +12,7 @@ import {
    BarChart,
    File,
    LucideLoader,
+   MessageCircleDashed,
    MessageCircleMore,
    Trash,
 } from "lucide-react";
@@ -87,17 +88,10 @@ const VideoCard = ({ video, status, docId, archived }: VideoCardProps) => {
                      >
                         <DropdownMenu.Item>
                            <DropdownMenu.Icon>
-                              <File />
+                              <MessageCircleDashed />
                            </DropdownMenu.Icon>
-                           Details
+                           Ask AI
                         </DropdownMenu.Item>
-                        <DropdownMenu.Item>
-                           <DropdownMenu.Icon>
-                              <MessageCircleMore />
-                           </DropdownMenu.Icon>
-                           Chat
-                        </DropdownMenu.Item>
-                        <DropdownMenu.Separator />
 
                         <DropdownMenu.Item
                            onClick={() => {

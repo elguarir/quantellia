@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_326d4056c3c576",
+    "operations": [
+      {
+        "sql": {
+          "up": "DROP INDEX transcripts_chat_id_key"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_326d4056c3c576",
+  "parent": "sql_f2032167a2201c",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:18:07.638815Z"
+}

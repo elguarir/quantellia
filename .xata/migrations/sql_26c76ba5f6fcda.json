@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_26c76ba5f6fcda",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE chats ADD CONSTRAINT chats_doc_id_fkey FOREIGN KEY (doc_id) REFERENCES documents (id) ON UPDATE CASCADE ON DELETE CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_26c76ba5f6fcda",
+  "parent": "sql_f24759f977d011",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:18:08.760915Z"
+}

@@ -34,6 +34,7 @@ model Document {
   type       DocumentType
   status     ProcessingStatus @default(PENDING)
   archivedAt DateTime?        @map("archived_at")
+  chat       Chat?
 
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   file         File?
@@ -103,17 +104,15 @@ model WebPage {
 }
 
 model Transcript {
-  id      String @id
-  videoId String @unique @map("video_id")
-
+  id         String  @id
+  videoId    String  @unique @map("video_id")
   text       String?
   summary    String?
   confidence Float?
 
   /// [TranscriptParagraphs]
   paragraphs Json?
-
-  video YoutubeVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  video      YoutubeVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
   xata_id        String   @unique(map: "transcripts__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
   xata_version   Int      @default(0)
@@ -121,6 +120,23 @@ model Transcript {
   xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
 
   @@map("transcripts")
+}
+
+model Chat {
+  id    String @id @default(dbgenerated("('chat_'::text || (xata_private.xid())::text)"))
+  docId String @unique @map("doc_id")
+
+  /// [DocChat]
+  messages Json?
+
+  doc Document @relation(fields: [docId], references: [id], onDelete: Cascade)
+
+  xata_id        String   @unique(map: "chats__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int      @default(0)
+  xata_createdat DateTime @default(now()) @db.Timestamptz(6)
+  xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("chats")
 }
 
 model File {

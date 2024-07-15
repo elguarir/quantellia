@@ -2,13 +2,17 @@
 
 import { addYoutubeVideoSchema, uploadFileSchema } from "@/lib/schemas.ts";
 import { authedProcedure } from "./procedures";
-import {  getYoutubeVideoDetails } from "@/lib/helpers";
+import { embedTexts, getYoutubeVideoDetails } from "@/lib/helpers";
 import { getIdFromVideoLink } from "@/lib/utils";
 import { db } from "@/lib/db";
 import { inngest } from "@/inngest";
 import { z } from "zod";
 import { getXataClient } from "@/lib/xata";
 import { XataError } from "@xata.io/client";
+import { CoreMessage, streamText } from "ai";
+import { Prisma } from "@prisma/client";
+import { google } from "@ai-sdk/google";
+import { createStreamableValue } from "ai/rsc";
 
 export const addYoutubeVideo = authedProcedure
    .createServerAction()
@@ -233,3 +237,200 @@ export const performActionOnDocument = authedProcedure
          throw new Error("Failed to perform action");
       }
    });
+
+export const answerQuestion = authedProcedure
+   .createServerAction()
+   .input(
+      z.object({
+         docId: z.string(),
+         chatId: z.string(),
+         messages: z.array(z.any()),
+      }),
+   )
+   .handler(async ({ input, ctx }) => {
+      const messages: CoreMessage[] = input.messages;
+
+      try {
+         const chat = await db.chat.findUnique({
+            where: {
+               id: input.chatId,
+               docId: input.docId,
+               doc: {
+                  userId: ctx.user.id,
+               },
+            },
+            include: {
+               doc: {
+                  include: {
+                     youtubeVideo: {
+                        include: {
+                           transcript: true,
+                        },
+                     },
+                     webPage: true,
+                     file: true,
+                  },
+               },
+            },
+         });
+         const xata = getXataClient();
+         // const results = await xata.
+
+         if (!chat) {
+            throw new Error(
+               "Document hasen't been processed yet, in order to answer questions",
+            );
+         }
+
+         const question = messages[messages.length - 1];
+
+         const [embedding] = await embedTexts([question.content as string]);
+         const relevantContext = await xata.db.vectors.vectorSearch(
+            "embedding",
+            embedding,
+            {
+               size: 5,
+               filter: {
+                  doc_id: chat.docId,
+               },
+            },
+         );
+
+         console.log(`
+               found {${relevantContext.records.length}} relevant context records\n
+               context: ${relevantContext.records.map((c) => "- " + c.content).join("\n")}
+            `);
+
+         const newMessages: CoreMessage[] = [
+            {
+               role: "system",
+               content: getSystemMessageByType(chat),
+            },
+            ...input.messages.splice(0, input.messages.length - 1),
+            {
+               content: `context retrieved of the video: ${relevantContext.records.map((c) => "- " + c.content).join(", ")}
+                  user question: ${question}`,
+               role: "user",
+            },
+         ];
+
+         const result = await streamText({
+            model: google("models/gemini-1.5-flash-latest", {
+               safetySettings: [
+                  {
+                     category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                     threshold: "BLOCK_NONE",
+                  },
+                  {
+                     category: "HARM_CATEGORY_HARASSMENT",
+                     threshold: "BLOCK_NONE",
+                  },
+                  {
+                     category: "HARM_CATEGORY_HATE_SPEECH",
+                     threshold: "BLOCK_NONE",
+                  },
+                  {
+                     category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                     threshold: "BLOCK_NONE",
+                  },
+               ],
+            }),
+            messages: newMessages,
+         });
+
+         const stream = createStreamableValue(result.textStream);
+         return stream.value;
+      } catch (error) {
+         if (error instanceof Error) {
+            // a weird way to do this, but i'm filtering any sensitive errors :D
+            if (
+               error.message ===
+               "Document hasen't been processed yet, in order to answer questions"
+            ) {
+               throw new Error(error.message);
+            } else {
+               console.error(error);
+               throw new Error("Failed to answer the question at this time");
+            }
+         }
+      }
+   });
+
+export const updateChatMessages = authedProcedure
+   .createServerAction()
+   .input(
+      z.object({
+         docId: z.string(),
+         chatId: z.string(),
+         messages: z.array(z.any()),
+      }),
+   )
+   .handler(async ({ input, ctx }) => {
+      const messages: CoreMessage[] = input.messages;
+
+      const chat = await db.chat.update({
+         where: {
+            id: input.chatId,
+            docId: input.docId,
+            doc: {
+               userId: ctx.user.id,
+            },
+         },
+         data: {
+            messages,
+         },
+      });
+      if (!chat) {
+         throw new Error(
+            "Document hasen't been processed yet, in order to answer questions",
+         );
+      }
+
+      return {
+         success: true,
+         messages,
+      };
+   });
+
+// utils
+type getSystemMessageByTypeProps = Prisma.ChatGetPayload<{
+   include: {
+      doc: {
+         include: {
+            youtubeVideo: {
+               include: {
+                  transcript: true;
+               };
+            };
+            webPage: true;
+            file: true;
+         };
+      };
+   };
+}>;
+
+const getSystemMessageByType = (chat: getSystemMessageByTypeProps) => {
+   switch (chat.doc.type) {
+      case "YoutubeVideo":
+         return `You are a helpful assistant,
+                     Your task is to answer questions and provide information about the following youtube video,
+                     make sure to provide accurate and helpful information, if the user asks something completely unrelated to the topic of the video you can tell them that you don't know the answer, or if it's something you know you can answer use simple language and be as helpful as possible.
+                     don't start the answer with unnecessary information, just answer the question don't use the same answering pattern, make your answers as humainly possible also engage with the user.
+                     you can also use markdown to format your messages(maybe lists, or bolding etc...), here are some initial information about the video you're responsible for:
+                     - title: ${chat.doc.youtubeVideo?.title}
+                     - channel: ${chat.doc.youtubeVideo?.channel}
+                     - description: ${chat.doc.youtubeVideo?.description}
+                     - views: ${chat.doc.youtubeVideo?.views}
+                     - length: ${chat.doc.youtubeVideo?.length}`;
+      case "File":
+         return `
+            You are a helpful assistant,
+            your task is to answer questions and provide information about a document, and to provide help with the document content, a context will be provided with each message to help you understand the user's query better. make sure to provide accurate and helpful information, if the user asks something completely unrelated to the document, you can respond and ask them to rephrase the question. if you are unsure about the answer, you can ask the user to clarify the question. if you are unable to answer the question, you can safely tell the user that you don't know the answer.
+         `;
+      default:
+         return `
+            You are a helpful assistant,
+            your task is to answer questions and provide information about a document, and to provide help with the document content, a context will be provided with each message to help you understand the user's query better. make sure to provide accurate and helpful information, if the user asks something completely unrelated to the document, you can respond and ask them to rephrase the question. if you are unsure about the answer, you can ask the user to clarify the question. if you are unable to answer the question, you can safely tell the user that you don't know the answer.
+         `;
+   }
+};

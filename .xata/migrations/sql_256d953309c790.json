@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_256d953309c790",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE chats ADD CONSTRAINT chats_transcript_id_fkey FOREIGN KEY (transcript_id) REFERENCES transcripts (id) ON UPDATE CASCADE ON DELETE CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_256d953309c790",
+  "parent": "sql_51a9e470fadef7",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:06:12.016597Z"
+}

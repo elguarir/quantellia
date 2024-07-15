@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_21b91bbf6de741",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE transcripts ADD COLUMN chat_id text"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_21b91bbf6de741",
+  "parent": "sql_4e66a19c8d59c9",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:06:10.645943Z"
+}

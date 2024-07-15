@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_24895433801917",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX chats_transcript_id_key ON chats USING btree (transcript_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_24895433801917",
+  "parent": "sql_3dcee322666d45",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:06:11.433335Z"
+}

@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_7df77bd8a3ac65",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE chats DROP CONSTRAINT chats_transcript_id_fkey"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_7df77bd8a3ac65",
+  "parent": "sql_256d953309c790",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:18:07.067317Z"
+}

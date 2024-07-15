@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_964641ff940d2e",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE chats DROP transcript_id, ADD COLUMN doc_id text NOT NULL"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_964641ff940d2e",
+  "parent": "sql_326d4056c3c576",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:18:07.824857Z"
+}

@@ -193,6 +193,11 @@ export const generateTranscriptEmbeddings = inngest.createFunction(
             video: {
                select: {
                   docId: true,
+                  title: true,
+                  channel: true,
+                  description: true,
+                  views: true,
+                  length: true,
                },
             },
          },
@@ -242,6 +247,22 @@ export const generateTranscriptEmbeddings = inngest.createFunction(
                   },
                },
             },
+         });
+
+         await db.chat.upsert({
+            where: {
+               docId: transcript.video.docId,
+            },
+            create: {
+               docId: transcript.video.docId,
+               messages: [
+                  {
+                     role: "assistant",
+                     content: `Hi, I'm your AI Buddy, I'm here to help you with any questions you have about the video, feel free to ask me anything and I'll do my best to help you out.`,
+                  },
+               ],
+            },
+            update: {},
          });
 
          return res;
@@ -366,6 +387,17 @@ export const completeFileProcessing = inngest.createFunction(
          });
 
          const records = await xata.db.vectors.create(formattedOutput);
+
+         await xata.db.chats.create({
+            doc_id: event.data.docId,
+            messages: [
+               {
+                  role: "assistant",
+                  content: `Hi, I'm your AI Buddy, I'm here to help you with any questions you have about this PDF document, feel free to ask me anything and I'll do my best to help you out.`,
+               },
+            ],
+         });
+
          await dbDoc.update({
             status: "PROCESSED",
          });

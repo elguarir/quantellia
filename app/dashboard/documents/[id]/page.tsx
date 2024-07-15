@@ -5,7 +5,7 @@ import {
    AccordianContent,
    AccordianRoot,
 } from "@/components/tailus-ui/accordian";
-import { Button } from "@/components/tailus-ui/button";
+
 import {
    Breadcrumb,
    BreadcrumbItem,
@@ -14,6 +14,7 @@ import {
    BreadcrumbPage,
    BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+
 import { db } from "@/lib/db";
 import { getIdFromVideoLink } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
@@ -21,7 +22,6 @@ import { BarChart, MessageCircleDashed } from "lucide-react";
 import { notFound } from "next/navigation";
 import Markdown from "@/components/markdown";
 import { TranscriptIcon, SparkIcon } from "@/components/icons";
-import { ExternalLinkIcon } from "@radix-ui/react-icons";
 import Badge from "@/components/tailus-ui/badge";
 import {
    TooltipContent,
@@ -29,6 +29,7 @@ import {
    TooltipRoot,
    TooltipTrigger,
 } from "@/components/tailus-ui/tooltip";
+import ChatSheet from "./_components/chat-sheet";
 
 interface DashboardPageProps {
    params: {
@@ -49,12 +50,13 @@ const DashboardPage = async (p: DashboardPageProps) => {
          file: true,
          youtubeVideo: { include: { transcript: true } },
          webPage: true,
+         chat: true,
       },
    });
-   console.log(doc?.youtubeVideo?.transcript);
+
    if (!doc) return notFound();
    const videoId = getIdFromVideoLink(doc.youtubeVideo?.link ?? "");
-   const isShort = doc.youtubeVideo?.link.includes("short");
+   console.log("chat", doc.chat);
    return (
       <PageWrapper
          title={
@@ -89,12 +91,7 @@ const DashboardPage = async (p: DashboardPageProps) => {
             <div className="flex items-center justify-between pb-6">
                <h1 className="text-2xl font-semibold">Details</h1>
                <div>
-                  <Button.Root>
-                     <Button.Icon>
-                        <MessageCircleDashed />
-                     </Button.Icon>
-                     <Button.Label>Ask AI</Button.Label>
-                  </Button.Root>
+                  <ChatSheet docId={doc.id} initialMessages={doc.chat?.messages ?? []} chatId={doc.chat?.id} />
                </div>
             </div>
             <div className="flex w-full gap-x-6 gap-y-14 pt-10 max-xl:flex-col">
@@ -152,7 +149,7 @@ const DashboardPage = async (p: DashboardPageProps) => {
                               <span>Summary</span>
                            </div>
                         </AccordianTrigger>
-                        <AccordianContent className="prose-sm prose-violet overflow-y-auto whitespace-pre-wrap px-6 dark:prose-invert lg:prose-base prose-h2:mb-1 prose-h2:mt-3 prose-p:my-0 prose-ol:-mt-5 prose-ol:list-decimal prose-ul:my-0 prose-ul:list-disc prose-li:-my-1 prose-li:leading-tight xl:max-h-[calc(100dvh-350px)] [&_mark]:bg-primary-600 [&_mark]:text-primary-foreground">
+                        <AccordianContent className="prose-sm prose-violet overflow-y-auto whitespace-pre-wrap px-6 dark:prose-invert lg:prose-base prose-h2:mb-1 prose-h2:mt-3 prose-p:my-0 prose-ol:-mt-5 prose-ol:list-decimal prose-ul:my-0 prose-ul:list-disc prose-li:-my-1 prose-li:leading-tight xl:max-h-[calc(100dvh-360px)] [&_mark]:bg-primary-600 [&_mark]:text-primary-foreground">
                            <Markdown
                               content={
                                  doc.youtubeVideo?.transcript?.summary ?? ""
@@ -201,7 +198,7 @@ const DashboardPage = async (p: DashboardPageProps) => {
                               )}
                            </div>
                         </AccordianTrigger>
-                        <AccordianContent className="prose-sm prose-violet overflow-y-auto px-6 dark:prose-invert lg:prose-base xl:max-h-[calc(100dvh-350px)]">
+                        <AccordianContent className="prose-sm prose-violet overflow-y-auto px-6 dark:prose-invert lg:prose-base xl:max-h-[calc(100dvh-360px)]">
                            <p className="!mt-0 whitespace-pre-wrap">
                               {doc.youtubeVideo?.transcript?.text}
                            </p>

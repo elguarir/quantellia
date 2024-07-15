@@ -8,6 +8,61 @@ import type {
 
 const tables = [
   {
+    name: "chats",
+    columns: [
+      {
+        name: "doc_id",
+        type: "link",
+        link: { table: "documents" },
+        notNull: true,
+        unique: true,
+        defaultValue: null,
+      },
+      {
+        name: "id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('chat_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "messages",
+        type: "json",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "xata_createdat",
+        type: "timestamp(6) with time zone",
+        notNull: true,
+        unique: false,
+        defaultValue: "CURRENT_TIMESTAMP",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "xata_updatedat",
+        type: "timestamp(6) with time zone",
+        notNull: true,
+        unique: false,
+        defaultValue: "CURRENT_TIMESTAMP",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+      },
+    ],
+  },
+  {
     name: "documents",
     columns: [
       {
@@ -614,6 +669,9 @@ const tables = [
 export type SchemaTables = typeof tables;
 export type InferredTypes = SchemaInference<SchemaTables>;
 
+export type Chats = InferredTypes["chats"];
+export type ChatsRecord = Chats & XataRecord;
+
 export type Documents = InferredTypes["documents"];
 export type DocumentsRecord = Documents & XataRecord;
 
@@ -639,6 +697,7 @@ export type YoutubeVideos = InferredTypes["youtube_videos"];
 export type YoutubeVideosRecord = YoutubeVideos & XataRecord;
 
 export type DatabaseSchema = {
+  chats: ChatsRecord;
   documents: DocumentsRecord;
   notifications: NotificationsRecord;
   transcripts: TranscriptsRecord;

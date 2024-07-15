@@ -40,7 +40,7 @@ export const LogoIcon = ({ className, ...props }: ComponentProps<"svg">) => (
       <svg
          xmlns="http://www.w3.org/2000/svg"
          viewBox="0 0 1446.7 1422.23"
-         className={cn("fill-[#212121] dark:fill-white", className)}
+         className={cn("fill-current", className)}
          {...props}
       >
          <g>

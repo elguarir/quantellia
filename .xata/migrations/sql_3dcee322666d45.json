@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_3dcee322666d45",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE chats (id text NOT NULL DEFAULT 'chat_'::text || xata_private.xid()::text, transcript_id text NOT NULL, messages jsonb, xata_id text NOT NULL DEFAULT 'rec_'::text || xata_private.xid()::text, xata_version int NOT NULL DEFAULT 0, xata_createdat timestamptz(6) NOT NULL DEFAULT current_timestamp, xata_updatedat timestamptz(6) NOT NULL DEFAULT current_timestamp, CONSTRAINT chats_pkey PRIMARY KEY (id))"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_3dcee322666d45",
+  "parent": "sql_21b91bbf6de741",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:06:11.03418Z"
+}

@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_84d6313c43582d",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE transcripts DROP chat_id"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_84d6313c43582d",
+  "parent": "sql_964641ff940d2e",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:18:08.188807Z"
+}

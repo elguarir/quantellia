@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_f24759f977d011",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX chats_doc_id_key ON chats USING btree (doc_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_f24759f977d011",
+  "parent": "sql_84d6313c43582d",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:18:08.561055Z"
+}

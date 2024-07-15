@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_efbd9dd7516858",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE UNIQUE INDEX chats__pgroll_new_xata_id_key ON chats USING btree (xata_id)"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_efbd9dd7516858",
+  "parent": "sql_24895433801917",
+  "schema": "public",
+  "startedAt": "2024-07-14T20:06:11.625197Z"
+}

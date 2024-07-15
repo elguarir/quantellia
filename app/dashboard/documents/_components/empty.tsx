@@ -3,7 +3,7 @@ import { Caption, Kbd, Text, Title } from "@/components/tailus-ui/typography";
 import Card from "@/components/tailus-ui/card";
 import { FileText, Globe, PenTool, Puzzle, Rocket } from "lucide-react";
 import BookBriefcase from "@/components/illustration/book-briefcase";
-import { YoutubeIcon } from "@/components/icons";
+import { YoutubeIcon, YTFilledIcon } from "@/components/icons";
 
 const EmptyDocuments = () => {
    const documentTypes = [
@@ -14,7 +14,7 @@ const EmptyDocuments = () => {
             "Upload and analyze PDF files for in-depth research and reference.",
       },
       {
-         icon: <YoutubeIcon className="size-6" />,
+         icon: <YTFilledIcon className="size-6" />,
          title: "YouTube Videos",
          description:
             "Extract insights from YouTube content with automatic transcription.",
@@ -33,13 +33,13 @@ const EmptyDocuments = () => {
             <div className="w-1/2 xl:w-1/5">
                <BookBriefcase />
             </div>
-            <div className="text-balance text-center">
+            <div className="text-balance text-center max-w-prose">
                <Title as="h1" size="2xl">
                   Your document library is empty
                </Title>
                <Caption>
                   Start by adding documents to fuel your research and stories.
-                  Click the "Add Document" button or press <Kbd>D</Kbd> to get
+                  Click the "New Document" button or press <Kbd>N</Kbd> to get
                   started.
                </Caption>
             </div>

@@ -1,3 +1,5 @@
+import { CoreMessage } from "ai";
+
 export interface Sentence {
    text: string;
    start: number;
@@ -28,5 +30,7 @@ declare global {
       };
 
       type TranscriptParagraphs = Paragraph[]
+
+      type DocChat = CoreMessage[]
    }
 }
