@@ -365,12 +365,59 @@ export const completeFileProcessing = inngest.createFunction(
       // embed all the chunks and save them
       const xata = getXataClient();
 
-      const [dbDoc] = await Promise.all([
+      const [dbDoc, dbFile] = await Promise.all([
          xata.db.documents
             .filter({ id: event.data.docId })
             .select(["*"])
             .getFirstOrThrow(),
+         xata.db.uploaded_files
+            .filter({ doc_id: { id: event.data.docId } })
+            .select(["*"])
+            .getFirstOrThrow(),
       ]);
+
+      await step.run("generate-summary", async () => {
+         const result = await generateText({
+            model: google("models/gemini-1.5-flash-latest", {
+               safetySettings: [
+                  {
+                     category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                     threshold: "BLOCK_NONE",
+                  },
+                  {
+                     category: "HARM_CATEGORY_HARASSMENT",
+                     threshold: "BLOCK_NONE",
+                  },
+                  {
+                     category: "HARM_CATEGORY_HATE_SPEECH",
+                     threshold: "BLOCK_NONE",
+                  },
+                  {
+                     category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                     threshold: "BLOCK_NONE",
+                  },
+               ],
+            }),
+            system: `You are a helpful assistant,
+                  your task is to create a summary for this PDF document about what it's about, ensure to use markdown formmating, you can also use the <mark></mark> to highlight important keywords, only if necessary (don't over use it) in the summary you should include the main points of the document, in a nice and concise manner, if for some reason no context is provided you can tell the user that
+                  the document is not clear enough to generate a summary.
+               `,
+            messages: [
+               {
+                  role: "system",
+                  content: `The first 10000 characters from the pdf: ${event.data.content
+                     .map((c) => c.text)
+                     .join("\n")
+                     .slice(0, 10000)}`, // only send the first 1000 characters
+               },
+            ],
+         });
+
+         const updated = await dbFile.update({
+            summary: result.text,
+         });
+         return updated?.toSerializable();
+      });
 
       await step.run("process-documents", async () => {
          const output = await embedTexts(
