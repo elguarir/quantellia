@@ -21,14 +21,14 @@ const NotFound = () => {
             <Breadcrumb>
                <BreadcrumbList className="flex-nowrap">
                   <BreadcrumbItem>
-                     <BreadcrumbLink href="/dashboard">
-                        Dashboard
+                     <BreadcrumbLink asChild>
+                        <Link href={"/dashboard"}>Dashboard</Link>
                      </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                     <BreadcrumbLink href="/documents">
-                        Documents
+                     <BreadcrumbLink href="/documents" asChild>
+                        <Link href={"/dashboard/documents"}>Documents</Link>
                      </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />

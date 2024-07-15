@@ -311,6 +311,13 @@ const tables = [
         defaultValue: null,
       },
       {
+        name: "summary",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
         name: "xata_createdat",
         type: "timestamp(6) with time zone",
         notNull: true,

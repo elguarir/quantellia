@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 import { InfoCircledIcon, KeyboardIcon } from "@radix-ui/react-icons";
 import { useServerAction } from "zsa-react";
 import { ChatMessage } from "../../_components/chat-message";
-import { answerQuestion } from "@/server/actions";
+import { answerQuestion, clearConversation } from "@/server/actions";
 import { readStreamableValue } from "ai/rsc";
 import { toast } from "sonner";
 import { useScrollAnchor } from "@/hooks/use-scroll-anchor";
@@ -56,7 +56,8 @@ const ChatSheet = (p: ChatSheetProps) => {
    const [isOpen, setOpen] = useState(false);
    const [messages, setMessages] = useState<CoreMessage[]>(p.initialMessages);
    const [snterToSubmit, setEnterToSubmit] = useState(false);
-   const { isAtBottom, messagesRef, scrollRef, visibilityRef, scrollToBottom } =
+
+   const { messagesRef, scrollRef, visibilityRef, scrollToBottom } =
       useScrollAnchor();
    const ref = useRef<HTMLDivElement>(null);
    const form = useForm<z.infer<typeof formSchema>>({
@@ -68,6 +69,13 @@ const ChatSheet = (p: ChatSheetProps) => {
    });
 
    const { execute, isPending } = useServerAction(answerQuestion);
+   const { execute: clear } = useServerAction(clearConversation, {
+      onSuccess: ({ data }) => {
+         setMessages(data.messages ?? []);
+         setOpen(false);
+         router.refresh();
+      },
+   });
 
    const onSubmit = async (values: z.infer<typeof formSchema>) => {
       if (!p.chatId) {
@@ -102,6 +110,16 @@ const ChatSheet = (p: ChatSheetProps) => {
          ]);
       }
    };
+
+   useEffect(() => {
+      const initialScroll = async () => {
+         for (let i = 0; i < 2; i++) {
+            scrollToBottom();
+            await new Promise((r) => setTimeout(r, 100));
+         }
+      };
+      initialScroll();
+   }, [isOpen]);
 
    useKeypress("c", (e) => {
       setOpen(true);
@@ -203,71 +221,108 @@ const ChatSheet = (p: ChatSheetProps) => {
                                  </FormItem>
                               )}
                            />
-                           <div className="flex items-center justify-end gap-2">
-                              {form.formState.errors.message?.message && (
+                           <div className="flex items-center justify-between gap-2">
+                              <div>
                                  <Tooltip.Root delayDuration={100}>
-                                    <Tooltip.Trigger asChild type="button">
+                                    <Tooltip.Trigger type="button">
                                        <Button.Root
-                                          variant="soft"
-                                          intent="danger"
-                                          size="sm"
+                                          type="button"
+                                          onClick={() => {
+                                             toast.promise(
+                                                clear({
+                                                   chatId: p.chatId!,
+                                                   docId: p.docId,
+                                                }),
+                                                {
+                                                   loading: "Clearing...",
+                                                   success: "Cleared!",
+                                                   error: "Failed to clear the conversation",
+                                                },
+                                             );
+                                          }}
                                        >
-                                          <Button.Icon type="only">
-                                             <InfoCircledIcon />
-                                          </Button.Icon>
+                                          <Button.Label>Clear</Button.Label>
                                        </Button.Root>
+                                    </Tooltip.Trigger>
+
+                                    <Tooltip.Portal container={ref.current}>
+                                       <Tooltip.Content
+                                          side="top"
+                                          align="center"
+                                       >
+                                          Clear all the messages in this chat.
+                                       </Tooltip.Content>
+                                    </Tooltip.Portal>
+                                 </Tooltip.Root>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                 {form.formState.errors.message?.message && (
+                                    <Tooltip.Root delayDuration={100}>
+                                       <Tooltip.Trigger asChild type="button">
+                                          <Button.Root
+                                             variant="soft"
+                                             intent="danger"
+                                             size="sm"
+                                          >
+                                             <Button.Icon type="only">
+                                                <InfoCircledIcon />
+                                             </Button.Icon>
+                                          </Button.Root>
+                                       </Tooltip.Trigger>
+                                       <Tooltip.Portal container={ref.current}>
+                                          <Tooltip.Content
+                                             side="top"
+                                             align="center"
+                                          >
+                                             {
+                                                form.formState.errors.message
+                                                   .message
+                                             }
+                                          </Tooltip.Content>
+                                       </Tooltip.Portal>
+                                    </Tooltip.Root>
+                                 )}
+                                 <Tooltip.Root delayDuration={100}>
+                                    <Tooltip.Trigger type="button">
+                                       <ToggleRoot
+                                          variant="softToSolid"
+                                          intent="neutral"
+                                          aria-label="Toggle bold"
+                                          size="sm"
+                                          className="w-fit whitespace-nowrap px-2"
+                                          pressed={snterToSubmit}
+                                          onPressedChange={setEnterToSubmit}
+                                       >
+                                          <ToggleIcon>
+                                             <KeyboardIcon />
+                                          </ToggleIcon>
+                                       </ToggleRoot>
                                     </Tooltip.Trigger>
                                     <Tooltip.Portal container={ref.current}>
                                        <Tooltip.Content
                                           side="top"
                                           align="center"
                                        >
-                                          {
-                                             form.formState.errors.message
-                                                .message
-                                          }
+                                          When enabled, you can submit <br />{" "}
+                                          the form by pressing the Enter key.
                                        </Tooltip.Content>
                                     </Tooltip.Portal>
                                  </Tooltip.Root>
-                              )}
-                              <Tooltip.Root delayDuration={100}>
-                                 <Tooltip.Trigger type="button">
-                                    <ToggleRoot
-                                       variant="softToSolid"
-                                       intent="neutral"
-                                       aria-label="Toggle bold"
-                                       size="sm"
-                                       className="w-fit whitespace-nowrap px-2"
-                                       pressed={snterToSubmit}
-                                       onPressedChange={setEnterToSubmit}
-                                    >
-                                       <ToggleIcon>
-                                          <KeyboardIcon />
-                                       </ToggleIcon>
-                                    </ToggleRoot>
-                                 </Tooltip.Trigger>
-                                 <Tooltip.Portal container={ref.current}>
-                                    <Tooltip.Content side="top" align="center">
-                                       When enabled, you can submit <br /> the
-                                       form by pressing the Enter key.
-                                    </Tooltip.Content>
-                                 </Tooltip.Portal>
-                              </Tooltip.Root>
-
-                              <Button.Root
-                                 size="sm"
-                                 variant="soft"
-                                 intent="primary"
-                                 type="submit"
-                                 disabled={isPending}
-                              >
-                                 <Button.Label>
-                                    {isPending ? "Hold on..." : "Send"}
-                                 </Button.Label>
-                                 <Button.Icon type="trailing">
-                                    <SendHorizontal />
-                                 </Button.Icon>
-                              </Button.Root>
+                                 <Button.Root
+                                    size="sm"
+                                    variant="soft"
+                                    intent="primary"
+                                    type="submit"
+                                    disabled={isPending}
+                                 >
+                                    <Button.Label>
+                                       {isPending ? "Hold on..." : "Send"}
+                                    </Button.Label>
+                                    <Button.Icon type="trailing">
+                                       <SendHorizontal />
+                                    </Button.Icon>
+                                 </Button.Root>
+                              </div>
                            </div>
                         </fieldset>
                      </form>

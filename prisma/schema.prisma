@@ -149,6 +149,7 @@ model File {
   /// [XataFile]
   pdf            Json
   document       Document @relation(fields: [docId], references: [id], onDelete: Cascade, map: "files_doc_id_fkey")
+  summary        String?
 
   @@map("uploaded_files")
 }

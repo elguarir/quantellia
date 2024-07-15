@@ -18,7 +18,7 @@ import {
 import { db } from "@/lib/db";
 import { getIdFromVideoLink } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
-import { BarChart, MessageCircleDashed } from "lucide-react";
+import { BarChart } from "lucide-react";
 import { notFound } from "next/navigation";
 import Markdown from "@/components/markdown";
 import { TranscriptIcon, SparkIcon } from "@/components/icons";
@@ -30,6 +30,11 @@ import {
    TooltipTrigger,
 } from "@/components/tailus-ui/tooltip";
 import ChatSheet from "./_components/chat-sheet";
+import Link from "next/link";
+import { getStatus } from "@/lib/constants";
+import { Prisma } from "@prisma/client";
+import { getXataClient } from "@/lib/xata";
+import PdfPreview from "./_components/pdf-preview";
 
 interface DashboardPageProps {
    params: {
@@ -55,22 +60,30 @@ const DashboardPage = async (p: DashboardPageProps) => {
    });
 
    if (!doc) return notFound();
-   const videoId = getIdFromVideoLink(doc.youtubeVideo?.link ?? "");
-   console.log("chat", doc.chat);
+   const statusData = getStatus(doc.status);
+   let pdfUrl = undefined;
+   if (doc.file?.pdf) {
+      let xata = getXataClient();
+      let pdfData = await xata.db.uploaded_files
+         .filter({ doc_id: { id: doc.id } })
+         .select(["doc_id.*", "pdf.signedUrl", "pdf.name"])
+         .getFirst();
+      if (pdfData) pdfUrl = pdfData?.pdf.signedUrl;
+   }
    return (
       <PageWrapper
          title={
             <Breadcrumb>
                <BreadcrumbList className="flex-nowrap">
                   <BreadcrumbItem>
-                     <BreadcrumbLink href="/dashboard">
-                        Dashboard
+                     <BreadcrumbLink asChild>
+                        <Link href={"/dashboard"}>Dashboard</Link>
                      </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                     <BreadcrumbLink href="/dashboard/documents">
-                        Documents
+                     <BreadcrumbLink asChild>
+                        <Link href={"/dashboard/documents"}>Documents</Link>
                      </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
@@ -78,6 +91,8 @@ const DashboardPage = async (p: DashboardPageProps) => {
                      <BreadcrumbPage className="line-clamp-1">
                         {doc.youtubeVideo ? (
                            <>{doc.youtubeVideo.title}</>
+                        ) : doc.file ? (
+                           <>{doc.file.pdf.name}</>
                         ) : (
                            "Details"
                         )}
@@ -89,53 +104,34 @@ const DashboardPage = async (p: DashboardPageProps) => {
       >
          <div className="w-full divide-y p-6">
             <div className="flex items-center justify-between pb-6">
-               <h1 className="text-2xl font-semibold">Details</h1>
+               <div className="flex items-center gap-3">
+                  <h1 className="text-2xl font-semibold">Details</h1>
+                  <Badge variant={"soft"} intent={statusData.intent as any}>
+                     <div className="flex items-center gap-2">
+                        <statusData.icon className="size-4" />
+                        {statusData.label}
+                     </div>
+                  </Badge>
+               </div>
                <div>
-                  <ChatSheet docId={doc.id} initialMessages={doc.chat?.messages ?? []} chatId={doc.chat?.id} />
+                  <ChatSheet
+                     docId={doc.id}
+                     initialMessages={doc.chat?.messages ?? []}
+                     chatId={doc.chat?.id}
+                  />
                </div>
             </div>
             <div className="flex w-full gap-x-6 gap-y-14 pt-10 max-xl:flex-col">
                <div className="flex w-full flex-col space-y-4 xl:w-2/3">
-                  <div className="aspect-video w-full overflow-hidden rounded-lg">
-                     <iframe
-                        width="100%"
-                        src={`https://www.youtube.com/embed/${videoId}`}
-                        title={doc.youtubeVideo?.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        className="aspect-video"
-                        allowFullScreen
-                     ></iframe>
-                  </div>
-                  <div className="flex w-full flex-wrap items-start justify-between gap-2">
-                     <h1 className="text-2xl font-semibold">
-                        {doc.youtubeVideo?.title}
-                     </h1>
-                     <div className="flex items-center gap-2">
-                        {doc.youtubeVideo?.views && (
-                           <Badge variant="outlined" intent="gray">
-                              <div className="flex items-center gap-2">
-                                 <BarChart className="size-4" />
-                                 <span>
-                                    {doc.youtubeVideo?.views?.toLocaleString()}{" "}
-                                    views
-                                 </span>
-                              </div>
-                           </Badge>
-                        )}
-                        {doc.youtubeVideo?.channel && (
-                           <Badge variant="soft" intent="primary">
-                              {doc.youtubeVideo?.channel}
-                           </Badge>
-                        )}
-                     </div>
-                  </div>
+                  {doc.youtubeVideo && <YoutubePreview doc={doc} />}
+                  {doc.file && <PdfPreview docId={doc.id} />}
                </div>
                <div className="w-full xl:w-1/3">
                   <AccordianRoot
                      type="single"
                      collapsible
                      variant="mixed"
-                     defaultValue="transcript"
+                     defaultValue="summary"
                      className="w-full max-w-prose"
                   >
                      <AccordianItem
@@ -157,53 +153,59 @@ const DashboardPage = async (p: DashboardPageProps) => {
                            />
                         </AccordianContent>
                      </AccordianItem>
-                     <AccordianItem
-                        value={"transcript"}
-                        key={"transcript"}
-                        className="px-0 data-[state=open]:z-0 [&>_h3]:px-[calc(var(--accordion-padding)+.5rem)]"
-                     >
-                        <AccordianTrigger className="[&_button_>_div]:w-full [&_button_>_div]:pr-3">
-                           <div className="flex w-full items-center justify-between gap-2">
-                              <div className="flex items-center gap-2">
-                                 <TranscriptIcon className="size-5" />
-                                 <span>Transcript</span>
+                     {doc.youtubeVideo && (
+                        <AccordianItem
+                           value={"transcript"}
+                           key={"transcript"}
+                           className="px-0 data-[state=open]:z-0 [&>_h3]:px-[calc(var(--accordion-padding)+.5rem)]"
+                        >
+                           <AccordianTrigger className="[&_button_>_div]:w-full [&_button_>_div]:pr-3">
+                              <div className="flex w-full items-center justify-between gap-2">
+                                 <div className="flex items-center gap-2">
+                                    <TranscriptIcon className="size-5" />
+                                    <span>Transcript</span>
+                                 </div>
+                                 {doc.youtubeVideo?.transcript?.confidence && (
+                                    <TooltipRoot delayDuration={100}>
+                                       <TooltipTrigger asChild>
+                                          <Badge
+                                             variant="soft"
+                                             intent="primary"
+                                          >
+                                             <div className="flex items-center gap-2">
+                                                <span>
+                                                   {(
+                                                      doc.youtubeVideo
+                                                         ?.transcript
+                                                         ?.confidence * 100
+                                                   ).toFixed(2)}
+                                                   %
+                                                </span>
+                                             </div>
+                                          </Badge>
+                                       </TooltipTrigger>
+                                       <TooltipPortal>
+                                          <TooltipContent className="mr-8">
+                                             This transcript has a confidence{" "}
+                                             <br /> level of{" "}
+                                             {(
+                                                doc.youtubeVideo?.transcript
+                                                   ?.confidence * 100
+                                             ).toFixed(2)}
+                                             %.
+                                          </TooltipContent>
+                                       </TooltipPortal>
+                                    </TooltipRoot>
+                                 )}
                               </div>
-                              {doc.youtubeVideo?.transcript?.confidence && (
-                                 <TooltipRoot delayDuration={100}>
-                                    <TooltipTrigger asChild>
-                                       <Badge variant="soft" intent="primary">
-                                          <div className="flex items-center gap-2">
-                                             <span>
-                                                {(
-                                                   doc.youtubeVideo?.transcript
-                                                      ?.confidence * 100
-                                                ).toFixed(2)}
-                                                %
-                                             </span>
-                                          </div>
-                                       </Badge>
-                                    </TooltipTrigger>
-                                    <TooltipPortal>
-                                       <TooltipContent className="mr-8">
-                                          This transcript has a confidence{" "}
-                                          <br /> level of{" "}
-                                          {(
-                                             doc.youtubeVideo?.transcript
-                                                ?.confidence * 100
-                                          ).toFixed(2)}
-                                          %.
-                                       </TooltipContent>
-                                    </TooltipPortal>
-                                 </TooltipRoot>
-                              )}
-                           </div>
-                        </AccordianTrigger>
-                        <AccordianContent className="prose-sm prose-violet overflow-y-auto px-6 dark:prose-invert lg:prose-base xl:max-h-[calc(100dvh-360px)]">
-                           <p className="!mt-0 whitespace-pre-wrap">
-                              {doc.youtubeVideo?.transcript?.text}
-                           </p>
-                        </AccordianContent>
-                     </AccordianItem>
+                           </AccordianTrigger>
+                           <AccordianContent className="prose-sm prose-violet overflow-y-auto px-6 dark:prose-invert lg:prose-base xl:max-h-[calc(100dvh-360px)]">
+                              <p className="!mt-0 whitespace-pre-wrap">
+                                 {doc.youtubeVideo?.transcript?.text}
+                              </p>
+                           </AccordianContent>
+                        </AccordianItem>
+                     )}
                   </AccordianRoot>
                </div>
             </div>
@@ -213,3 +215,55 @@ const DashboardPage = async (p: DashboardPageProps) => {
 };
 
 export default DashboardPage;
+
+function YoutubePreview({
+   doc,
+}: {
+   doc: Prisma.DocumentGetPayload<{
+      include: {
+         file: true;
+         youtubeVideo: { include: { transcript: true } };
+         webPage: true;
+         chat: true;
+      };
+   }>;
+}) {
+   const videoId = getIdFromVideoLink(doc.youtubeVideo?.link ?? "");
+
+   return (
+      <>
+         <div className="aspect-video w-full overflow-hidden rounded-lg">
+            <iframe
+               width="100%"
+               src={`https://www.youtube.com/embed/${videoId}`}
+               title={doc.youtubeVideo?.title}
+               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+               className="aspect-video"
+               allowFullScreen
+            ></iframe>
+         </div>
+         <div className="flex w-full flex-wrap items-start justify-between gap-2">
+            <h1 className="text-2xl font-semibold">
+               {doc.youtubeVideo?.title}
+            </h1>
+            <div className="flex items-center gap-2">
+               {doc.youtubeVideo?.views && (
+                  <Badge variant="outlined" intent="gray">
+                     <div className="flex items-center gap-2">
+                        <BarChart className="size-4" />
+                        <span>
+                           {doc.youtubeVideo?.views?.toLocaleString()} views
+                        </span>
+                     </div>
+                  </Badge>
+               )}
+               {doc.youtubeVideo?.channel && (
+                  <Badge variant="soft" intent="primary">
+                     {doc.youtubeVideo?.channel}
+                  </Badge>
+               )}
+            </div>
+         </div>
+      </>
+   );
+}

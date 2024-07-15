@@ -39,8 +39,8 @@ const PageWrapper = ({ title, children }: Props) => {
                   {title}
                </Title>
             </div>
-            <div>
-               <Notifications />
+            <div className="py-4">
+               {/* <Notifications /> */}
             </div>
          </div>
          <div>{children}</div>

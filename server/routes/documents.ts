@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { getXataClient } from "@/lib/xata";
 import { auth } from "@clerk/nextjs/server";
 import { Hono } from "hono";
 
@@ -42,6 +43,34 @@ const documents = new Hono()
       }
 
       return c.json(doc);
+   })
+   .get("pdf/:id", async (c) => {
+      /**
+       * a hacky way to bypass cors errors from xata
+       */
+
+      const { userId } = auth();
+      if (!userId) {
+         return auth().redirectToSignIn({
+            returnBackUrl: "/dashboard/documents",
+         });
+      }
+
+      const xata = getXataClient();
+      let pdfData = await xata.db.uploaded_files
+         .filter({ doc_id: { id: c.req.param("id") } })
+         .select(["doc_id.*", "pdf.signedUrl", "pdf.name"])
+         .getFirstOrThrow();
+
+      const blob = await fetch(pdfData?.pdf.signedUrl as string).then((res) =>
+         res.blob(),
+      );
+      const buffer = await blob.arrayBuffer();
+      return c.body(buffer, {
+         headers: {
+            "Content-Type": "application/pdf",
+         },
+      });
    });
 
 export default documents;

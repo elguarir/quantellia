@@ -16,6 +16,7 @@ import { Types } from "@/lib/constants";
 import { parseAsArrayOf, parseAsStringEnum } from "nuqs";
 import DocumentsGrid from "./_components/documents-grid";
 import EmptyDocuments from "./_components/empty";
+import Link from "next/link";
 
 interface DashboardPageProps {
    searchParams: {
@@ -51,8 +52,8 @@ const DashboardPage = async (p: DashboardPageProps) => {
             <Breadcrumb>
                <BreadcrumbList>
                   <BreadcrumbItem>
-                     <BreadcrumbLink href="/dashboard">
-                        Dashboard
+                     <BreadcrumbLink  asChild>
+                        <Link href={"/dashboard"}>Dashboard</Link>
                      </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />

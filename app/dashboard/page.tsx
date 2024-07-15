@@ -6,6 +6,7 @@ import {
    BreadcrumbLink,
    BreadcrumbList,
 } from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 const DashboardPage = () => {
    return (
@@ -14,8 +15,8 @@ const DashboardPage = () => {
             <Breadcrumb>
                <BreadcrumbList>
                   <BreadcrumbItem>
-                     <BreadcrumbLink href="/dashboard">
-                        Dashboard
+                     <BreadcrumbLink asChild>
+                        <Link href={"/dashboard"}>Dashboard</Link>
                      </BreadcrumbLink>
                   </BreadcrumbItem>
                </BreadcrumbList>

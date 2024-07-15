@@ -3,7 +3,7 @@
 import { addYoutubeVideoSchema, uploadFileSchema } from "@/lib/schemas.ts";
 import { authedProcedure } from "./procedures";
 import { embedTexts, getYoutubeVideoDetails } from "@/lib/helpers";
-import { getIdFromVideoLink } from "@/lib/utils";
+import { formatBytes, getIdFromVideoLink } from "@/lib/utils";
 import { db } from "@/lib/db";
 import { inngest } from "@/inngest";
 import { z } from "zod";
@@ -380,6 +380,53 @@ export const answerQuestion = authedProcedure
       }
    });
 
+export const clearConversation = authedProcedure
+   .createServerAction()
+   .input(
+      z.object({
+         docId: z.string(),
+         chatId: z.string(),
+      }),
+   )
+   .handler(async ({ input, ctx }) => {
+      const chat = await db.chat.findUnique({
+         where: {
+            id: input.chatId,
+            docId: input.docId,
+            doc: {
+               userId: ctx.user.id,
+            },
+         },
+      });
+
+      if (!chat) {
+         throw new Error("Document not found");
+      }
+
+      const updated = await db.chat.update({
+         where: {
+            id: input.chatId,
+            docId: input.docId,
+            doc: {
+               userId: ctx.user.id,
+            },
+         },
+         data: {
+            messages: [
+               {
+                  role: "assistant",
+                  content: `Hi, I'm your AI Buddy, I'm here to help you with any questions you have about this PDF document, feel free to ask me anything and I'll do my best to help you out.`,
+               },
+            ],
+         },
+      });
+
+      return {
+         success: true,
+         messages: updated.messages,
+      };
+   });
+
 export const updateChatMessages = authedProcedure
    .createServerAction()
    .input(
@@ -450,13 +497,20 @@ const getSystemMessageByType = (chat: getSystemMessageByTypeProps) => {
                      - length: ${chat.doc.youtubeVideo?.length}`;
       case "File":
          return `
-            You are a helpful assistant,
-            your task is to answer questions and provide information about a document, and to provide help with the document content, a context will be provided with each message to help you understand the user's query better. make sure to provide accurate and helpful information, if the user asks something completely unrelated to the document, you can respond and ask them to rephrase the question. if you are unsure about the answer, you can ask the user to clarify the question. if you are unable to answer the question, you can safely tell the user that you don't know the answer.
+         You are a helpful assistant,
+         Your task is to answer questions and provide information about the following PDF document,
+         make sure to provide accurate and helpful information, relevant parts of the document will be provided to help answer the question.
+         if you know something that is not mentioned on the context provided about the question you can answer if you know the answer.
+         make sure the answer is properly formatted, use markdown to format the text (also lists, bold,italic, mark, formatting if needed).
+         make sure the answer is detailed if needed
+         here are some initial information about the document you're responsible for:
+         - name: ${chat.doc.file?.pdf.name}
+         - size: ${formatBytes(chat.doc.file?.pdf.size ?? 0, { decimals: 2, sizeType: "normal" })}
+         again, these are just information about the file itself, but when a user is  asking a question relevant context from the document will be provided, if the context is not enough, you can ask the user to rephrase the question, or simply tell them that you don't know the answer (first option is better).
          `;
       default:
          return `
-            You are a helpful assistant,
-            your task is to answer questions and provide information about a document, and to provide help with the document content, a context will be provided with each message to help you understand the user's query better. make sure to provide accurate and helpful information, if the user asks something completely unrelated to the document, you can respond and ask them to rephrase the question. if you are unsure about the answer, you can ask the user to clarify the question. if you are unable to answer the question, you can safely tell the user that you don't know the answer.
+          
          `;
    }
 };

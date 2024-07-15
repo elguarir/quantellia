@@ -15,6 +15,7 @@ import StoriesIllustration from "@/components/illustration/stories-illustration"
 import { Caption, Kbd, Text, Title } from "@/components/tailus-ui/typography";
 import Card from "@/components/tailus-ui/card";
 import EmptyStories from "./_components/empty";
+import Link from "next/link";
 
 interface DashboardPageProps {
    searchParams: {
@@ -50,8 +51,8 @@ const DashboardPage = (p: DashboardPageProps) => {
             <Breadcrumb>
                <BreadcrumbList>
                   <BreadcrumbItem>
-                     <BreadcrumbLink href="/dashboard">
-                        Dashboard
+                     <BreadcrumbLink asChild>
+                        <Link href={"/dashboard"}>Dashboard</Link>
                      </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />

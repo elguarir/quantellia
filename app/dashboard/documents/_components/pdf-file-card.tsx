@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { Document, File as PdfDoc } from "@prisma/client";
-import { Title } from "@/components/tailus-ui/typography";
+import { Caption, Title } from "@/components/tailus-ui/typography";
 import DropdownMenu from "@/components/tailus-ui/dropdown-menu";
 import { Button } from "@/components/tailus-ui/button";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { DotsVerticalIcon, SizeIcon } from "@radix-ui/react-icons";
 import Badge from "@/components/tailus-ui/badge";
 import SeparatorRoot from "@/components/tailus-ui/separator";
 import {
@@ -19,9 +19,12 @@ import { getDownloadUrl, performActionOnDocument } from "@/server/actions";
 import { useServerAction } from "zsa-react";
 import { toast } from "sonner";
 import { getStatus } from "@/lib/constants";
-import { decodeDoubleEncodedUriComponent } from "@/lib/utils";
+import { decodeDoubleEncodedUriComponent, formatBytes } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import AlertDialog from "@/components/tailus-ui/alert-dialog";
+import Tooltip from "@/components/tailus-ui/tooltip";
+import Link from "next/link";
+import { CutePdfIcon } from "@/components/icons";
 
 interface PdfFileCardProps {
    pdfFile: PdfDoc;
@@ -72,10 +75,30 @@ const PdfFileCard = ({
       <div className="flex h-full min-h-40 flex-col">
          <header className="space-y-1">
             <div className="flex w-full items-start justify-between gap-2">
-               <div className="line-clamp-2">
-                  <Title as="h3" className="text-lg">
-                     <>{decodeDoubleEncodedUriComponent(pdfFile?.pdf?.name)}</>
-                  </Title>
+               <div className="flex flex-col space-y-1">
+                  <div className="line-clamp-1">
+                     <Title as="h3" className="text-lg">
+                        <>
+                           {decodeDoubleEncodedUriComponent(pdfFile?.pdf?.name)}
+                        </>
+                     </Title>
+                  </div>
+                  <div className="flex items-center gap-2">
+                     <Badge
+                        variant="outlined"
+                        intent="gray"
+                        size="sm"
+                        className="inline-flex gap-1 whitespace-nowrap rounded-md py-0.5"
+                     >
+                        <SizeIcon className="size-4" />
+                        <span className="text-xs">
+                           {formatBytes(pdfFile?.pdf?.size, {
+                              sizeType: "normal",
+                              decimals: 2,
+                           })}
+                        </span>
+                     </Badge>
+                  </div>
                </div>
                <DropdownMenu.Root>
                   <DropdownMenu.Trigger asChild>
@@ -155,7 +178,12 @@ const PdfFileCard = ({
             <div className="flex flex-wrap items-center gap-2"></div>
          </header>
          <SeparatorRoot className="my-4" />
-         <div className="group relative h-full min-h-[175px] flex-1 overflow-hidden rounded-lg sm:min-h-[225px]"></div>
+         <div className="group relative flex flex-col h-full min-h-[175px] flex-1 items-center justify-center overflow-hidden rounded-lg sm:min-h-[225px]">
+            <CutePdfIcon className="w-1/3" />
+            <Caption size={"sm"}>
+               Go to the details page to preview the document.
+            </Caption>
+         </div>
          <SeparatorRoot className="my-4" />
          <footer className="flex items-center justify-between">
             <form
@@ -164,24 +192,38 @@ const PdfFileCard = ({
                   generateDownloadUrl({ docId });
                }}
             >
-               <Button.Root
-                  type="submit"
-                  variant="ghost"
-                  intent="gray"
-                  size="sm"
-                  disabled={isGenerating}
-               >
-                  <Button.Label>
-                     {isGenerating ? "Downloading" : "Download"}
-                  </Button.Label>
-                  <Button.Icon type="trailing">
-                     {isGenerating ? (
-                        <LucideLoader className="animate-spin" />
-                     ) : (
-                        <Download />
-                     )}
-                  </Button.Icon>
-               </Button.Root>
+               <div className="flex items-center gap-2">
+                  <Tooltip.Root delayDuration={100}>
+                     <Tooltip.Trigger asChild>
+                        <Button.Root
+                           type="submit"
+                           variant="ghost"
+                           intent="gray"
+                           size="sm"
+                           disabled={isGenerating}
+                        >
+                           <Button.Icon type="only">
+                              {isGenerating ? (
+                                 <LucideLoader className="animate-spin" />
+                              ) : (
+                                 <Download />
+                              )}
+                           </Button.Icon>
+                        </Button.Root>
+                     </Tooltip.Trigger>
+                     <Tooltip.Portal>
+                        <Tooltip.Content>Download the document</Tooltip.Content>
+                     </Tooltip.Portal>
+                  </Tooltip.Root>
+                  <Button.Root variant="ghost" intent="gray" size="sm">
+                     <Link
+                        href={`/dashboard/documents/${docId}`}
+                        className="text-sm"
+                     >
+                        <Button.Label>View details</Button.Label>
+                     </Link>
+                  </Button.Root>
+               </div>
             </form>
             <div>
                <Badge

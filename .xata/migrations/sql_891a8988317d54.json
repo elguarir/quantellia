@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_891a8988317d54",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE uploaded_files ADD COLUMN summary text"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_891a8988317d54",
+  "parent": "sql_26c76ba5f6fcda",
+  "schema": "public",
+  "startedAt": "2024-07-15T16:58:28.831835Z"
+}
