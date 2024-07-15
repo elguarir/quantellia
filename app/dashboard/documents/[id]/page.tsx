@@ -147,22 +147,21 @@ const DashboardPage = async (p: DashboardPageProps) => {
                            </div>
                         </AccordianTrigger>
                         <AccordianContent className="prose-sm prose-violet overflow-y-auto whitespace-pre-wrap px-6 dark:prose-invert lg:prose-base prose-h2:mb-1 prose-h2:mt-3 prose-p:my-0 prose-ol:-mt-5 prose-ol:list-decimal prose-ul:my-0 prose-ul:list-disc prose-li:-my-1 prose-li:leading-tight xl:max-h-[calc(100dvh-360px)] [&_mark]:bg-primary-600 [&_mark]:text-primary-foreground">
-                           {doc.youtubeVideo?.transcript?.summary ? (
+                           {doc.youtubeVideo?.transcript?.summary && (
                               <Markdown
                                  content={
                                     doc.youtubeVideo?.transcript?.summary ?? ""
                                  }
                               />
-                           ) : (
-                              <Caption>
-                                 No summary available for this document yet.
-                              </Caption>
                            )}
-                           {doc.file?.summary ? (
+                           {doc.file?.summary && (
                               <Markdown content={doc.file?.summary ?? ""} />
-                           ) : (
+                           )}
+
+                           {(!doc.youtubeVideo?.transcript?.summary ||
+                              !doc.file?.summary) && (
                               <Caption>
-                                 No summary available for this document yet.
+                                 No summary available for this document.
                               </Caption>
                            )}
                         </AccordianContent>

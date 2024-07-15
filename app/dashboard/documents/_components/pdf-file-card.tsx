@@ -121,20 +121,6 @@ const PdfFileCard = ({
                         className="w-44"
                         align="end"
                      >
-                        <DropdownMenu.Item>
-                           <DropdownMenu.Icon>
-                              <File />
-                           </DropdownMenu.Icon>
-                           Details
-                        </DropdownMenu.Item>
-                        <DropdownMenu.Item>
-                           <DropdownMenu.Icon>
-                              <MessageCircleMore />
-                           </DropdownMenu.Icon>
-                           Chat
-                        </DropdownMenu.Item>
-                        <DropdownMenu.Separator />
-
                         <DropdownMenu.Item
                            onClick={() => {
                               toast.promise(
@@ -178,7 +164,7 @@ const PdfFileCard = ({
             <div className="flex flex-wrap items-center gap-2"></div>
          </header>
          <SeparatorRoot className="my-4" />
-         <div className="group relative flex flex-col h-full min-h-[175px] flex-1 items-center justify-center overflow-hidden rounded-lg sm:min-h-[225px]">
+         <div className="group relative flex h-full min-h-[175px] flex-1 flex-col items-center justify-center overflow-hidden rounded-lg sm:min-h-[225px]">
             <CutePdfIcon className="w-1/3" />
             <Caption size={"sm"}>
                Go to the details page to preview the document.

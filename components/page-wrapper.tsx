@@ -5,7 +5,6 @@ import { useSidebar } from "@/hooks/use-sidebar";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import React from "react";
-import { Notifications } from "../app/dashboard/_components/notifications";
 
 interface Props {
    children?: React.ReactNode;
