@@ -34,6 +34,8 @@ import { ChatMessage } from "../../_components/chat-message";
 import { answerQuestion, updateChatMessages } from "@/server/actions";
 import { readStreamableValue } from "ai/rsc";
 import { toast } from "sonner";
+import { useScrollAnchor } from "@/hooks/use-scroll-anchor";
+import { ButtonScrollToBottom } from "./button-scroll-to-bottom";
 
 // Force the page to be dynamic and allow streaming responses up to 30 seconds
 export const dynamic = "force-dynamic";
@@ -51,9 +53,17 @@ const formSchema = z.object({
 
 const ChatSheet = (p: ChatSheetProps) => {
    const router = useRouter();
-
    const [isOpen, setOpen] = useState(false);
    const [messages, setMessages] = useState<CoreMessage[]>(p.initialMessages);
+   const [snterToSubmit, setEnterToSubmit] = useState(false);
+   const {
+      isVisible,
+      isAtBottom,
+      messagesRef,
+      scrollRef,
+      visibilityRef,
+      scrollToBottom,
+   } = useScrollAnchor();
    const ref = useRef<HTMLDivElement>(null);
    const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -62,16 +72,8 @@ const ChatSheet = (p: ChatSheetProps) => {
          message: "",
       },
    });
-   const { execute, isPending } = useServerAction(answerQuestion, {
-      onSuccess: async () => {
-         if (!p.chatId) return;
-         await updateChatMessages({
-            chatId: p.chatId,
-            messages: messages,
-            docId: p.docId,
-         });
-      },
-   });
+
+   const { execute, isPending } = useServerAction(answerQuestion);
 
    const onSubmit = async (values: z.infer<typeof formSchema>) => {
       if (!p.chatId) {
@@ -88,6 +90,7 @@ const ChatSheet = (p: ChatSheetProps) => {
          chatId: p.chatId,
          docId: p.docId,
       });
+      form.reset({ message: "" });
       if (err || !result) {
          toast.error(err?.message);
          return;
@@ -102,6 +105,12 @@ const ChatSheet = (p: ChatSheetProps) => {
             },
          ]);
       }
+
+      await updateChatMessages({
+         chatId: p.chatId,
+         messages: messages,
+         docId: p.docId,
+      });
    };
 
    useKeypress("c", (e) => {
@@ -154,13 +163,17 @@ const ChatSheet = (p: ChatSheetProps) => {
                </SheetDescription>
             </SheetHeader>
             <div className="relative h-[calc(100dvh-140px)]">
-               <div className="h-[calc(100%-128px)] w-full overflow-y-auto border-t px-6 pb-6 pt-4">
-                  <div className="w-full divide-y">
+               <div
+                  ref={scrollRef}
+                  className="h-[calc(100%-128px)] w-full overflow-y-auto border-t px-6 pb-6 pt-4"
+               >
+                  <div className="w-full divide-y" ref={messagesRef}>
                      {messages.map((message, index) => (
                         <div className="py-6 first:pt-4" key={index}>
                            <ChatMessage message={message} />
                         </div>
                      ))}
+                     <div className="h-px w-full" ref={visibilityRef} />
                   </div>
                </div>
                <div className="absolute -bottom-6 w-full border-t bg-background px-6 py-4 shadow-lg">
@@ -238,6 +251,10 @@ const ChatSheet = (p: ChatSheetProps) => {
                      </form>
                   </Form>
                </div>
+               <ButtonScrollToBottom
+                  isAtBottom={isAtBottom}
+                  scrollToBottom={scrollToBottom}
+               />
             </div>
          </SheetContent>
       </Sheet>

@@ -289,28 +289,30 @@ export const answerQuestion = authedProcedure
             "embedding",
             embedding,
             {
-               size: 5,
+               size: 10,
                filter: {
                   doc_id: chat.docId,
                },
             },
          );
 
-         console.log(`
-               found {${relevantContext.records.length}} relevant context records\n
-               context: ${relevantContext.records.map((c) => "- " + c.content).join("\n")}
-            `);
-
+         console.log(`found {${relevantContext.records.length}} relevant context records\n context: ${relevantContext.records.map((c) => "- " + c.content).join("\n")}`);
+            
          const newMessages: CoreMessage[] = [
             {
                role: "system",
                content: getSystemMessageByType(chat),
             },
-            ...input.messages.splice(0, input.messages.length - 1),
+            ...input.messages,
             {
-               content: `context retrieved of the video: ${relevantContext.records.map((c) => "- " + c.content).join(", ")}
-                  user question: ${question}`,
-               role: "user",
+               role: "system",
+               content: `
+                  user's question: ${question.content}
+                  context for the question:
+                  ${relevantContext.records
+                     .map((c) => `- ${c.content}`)
+                     .join("\n")}
+               `,
             },
          ];
 
@@ -414,9 +416,11 @@ const getSystemMessageByType = (chat: getSystemMessageByTypeProps) => {
       case "YoutubeVideo":
          return `You are a helpful assistant,
                      Your task is to answer questions and provide information about the following youtube video,
-                     make sure to provide accurate and helpful information, if the user asks something completely unrelated to the topic of the video you can tell them that you don't know the answer, or if it's something you know you can answer use simple language and be as helpful as possible.
-                     don't start the answer with unnecessary information, just answer the question don't use the same answering pattern, make your answers as humainly possible also engage with the user.
-                     you can also use markdown to format your messages(maybe lists, or bolding etc...), here are some initial information about the video you're responsible for:
+                     make sure to provide accurate and helpful information, relevant parts of the video transcript will be provided to help answer the question.
+                     if you know something that is not mentioned on the context provided about the question you can answer if you know the answer.
+                     make sure the answer is properly formatted, use markdown to format the text (also lists, bold,italic, mark, formatting if needed).
+                     make sure the answer is detailed if needed
+                     here are some initial information about the video you're responsible for:
                      - title: ${chat.doc.youtubeVideo?.title}
                      - channel: ${chat.doc.youtubeVideo?.channel}
                      - description: ${chat.doc.youtubeVideo?.description}
