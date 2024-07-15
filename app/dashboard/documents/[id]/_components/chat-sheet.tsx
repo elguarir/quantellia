@@ -14,7 +14,7 @@ import {
 import useKeypress from "@/hooks/use-key-press";
 import { MessageCircleDashed, Send, SendHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CoreMessage } from "ai";
 import Tooltip from "@/components/tailus-ui/tooltip";
 import { z } from "zod";
@@ -28,14 +28,14 @@ import {
    FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { InfoCircledIcon, KeyboardIcon } from "@radix-ui/react-icons";
 import { useServerAction } from "zsa-react";
 import { ChatMessage } from "../../_components/chat-message";
 import { answerQuestion, updateChatMessages } from "@/server/actions";
 import { readStreamableValue } from "ai/rsc";
 import { toast } from "sonner";
 import { useScrollAnchor } from "@/hooks/use-scroll-anchor";
-import { ButtonScrollToBottom } from "./button-scroll-to-bottom";
+import { ToggleIcon, ToggleRoot } from "@/components/tailus-ui/toogle";
 
 // Force the page to be dynamic and allow streaming responses up to 30 seconds
 export const dynamic = "force-dynamic";
@@ -56,14 +56,8 @@ const ChatSheet = (p: ChatSheetProps) => {
    const [isOpen, setOpen] = useState(false);
    const [messages, setMessages] = useState<CoreMessage[]>(p.initialMessages);
    const [snterToSubmit, setEnterToSubmit] = useState(false);
-   const {
-      isVisible,
-      isAtBottom,
-      messagesRef,
-      scrollRef,
-      visibilityRef,
-      scrollToBottom,
-   } = useScrollAnchor();
+   const { isAtBottom, messagesRef, scrollRef, visibilityRef, scrollToBottom } =
+      useScrollAnchor();
    const ref = useRef<HTMLDivElement>(null);
    const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -79,6 +73,8 @@ const ChatSheet = (p: ChatSheetProps) => {
       if (!p.chatId) {
          return;
       }
+      form.reset({ message: "" });
+
       const newMessages: CoreMessage[] = [
          ...messages,
          { content: values.message, role: "user" },
@@ -90,13 +86,13 @@ const ChatSheet = (p: ChatSheetProps) => {
          chatId: p.chatId,
          docId: p.docId,
       });
-      form.reset({ message: "" });
       if (err || !result) {
          toast.error(err?.message);
          return;
       }
 
       for await (const content of readStreamableValue(result)) {
+         scrollToBottom();
          setMessages([
             ...newMessages,
             {
@@ -200,6 +196,14 @@ const ChatSheet = (p: ChatSheetProps) => {
                                                 "focus:outline-danger focus-visible:outline-danger",
                                           )}
                                           {...field}
+                                          onKeyDown={(e) => {
+                                             if (
+                                                snterToSubmit &&
+                                                e.key === "Enter"
+                                             ) {
+                                                form.handleSubmit(onSubmit)();
+                                             }
+                                          }}
                                        />
                                     </FormControl>
                                  </FormItem>
@@ -232,6 +236,30 @@ const ChatSheet = (p: ChatSheetProps) => {
                                     </Tooltip.Portal>
                                  </Tooltip.Root>
                               )}
+                              <Tooltip.Root delayDuration={100}>
+                                 <Tooltip.Trigger type="button">
+                                    <ToggleRoot
+                                       variant="softToSolid"
+                                       intent="neutral"
+                                       aria-label="Toggle bold"
+                                       size="sm"
+                                       className="w-fit whitespace-nowrap px-2"
+                                       pressed={snterToSubmit}
+                                       onPressedChange={setEnterToSubmit}
+                                    >
+                                       <ToggleIcon>
+                                          <KeyboardIcon />
+                                       </ToggleIcon>
+                                    </ToggleRoot>
+                                 </Tooltip.Trigger>
+                                 <Tooltip.Portal container={ref.current}>
+                                    <Tooltip.Content side="top" align="center">
+                                       When enabled, you can submit <br /> the
+                                       form by pressing the Enter key.
+                                    </Tooltip.Content>
+                                 </Tooltip.Portal>
+                              </Tooltip.Root>
+
                               <Button.Root
                                  size="sm"
                                  variant="soft"
@@ -251,10 +279,6 @@ const ChatSheet = (p: ChatSheetProps) => {
                      </form>
                   </Form>
                </div>
-               <ButtonScrollToBottom
-                  isAtBottom={isAtBottom}
-                  scrollToBottom={scrollToBottom}
-               />
             </div>
          </SheetContent>
       </Sheet>
