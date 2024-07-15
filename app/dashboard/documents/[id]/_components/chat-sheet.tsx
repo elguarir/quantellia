@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 import { InfoCircledIcon, KeyboardIcon } from "@radix-ui/react-icons";
 import { useServerAction } from "zsa-react";
 import { ChatMessage } from "../../_components/chat-message";
-import { answerQuestion, updateChatMessages } from "@/server/actions";
+import { answerQuestion } from "@/server/actions";
 import { readStreamableValue } from "ai/rsc";
 import { toast } from "sonner";
 import { useScrollAnchor } from "@/hooks/use-scroll-anchor";
@@ -101,12 +101,6 @@ const ChatSheet = (p: ChatSheetProps) => {
             },
          ]);
       }
-
-      await updateChatMessages({
-         chatId: p.chatId,
-         messages: messages,
-         docId: p.docId,
-      });
    };
 
    useKeypress("c", (e) => {

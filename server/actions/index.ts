@@ -296,8 +296,10 @@ export const answerQuestion = authedProcedure
             },
          );
 
-         console.log(`found {${relevantContext.records.length}} relevant context records\n context: ${relevantContext.records.map((c) => "- " + c.content).join("\n")}`);
-            
+         console.log(
+            `found {${relevantContext.records.length}} relevant context records\n context: ${relevantContext.records.map((c) => "- " + c.content).join("\n")}`,
+         );
+
          const newMessages: CoreMessage[] = [
             {
                role: "system",
@@ -338,6 +340,26 @@ export const answerQuestion = authedProcedure
                ],
             }),
             messages: newMessages,
+            onFinish: async ({ text }) => {
+               await db.chat.update({
+                  where: {
+                     id: input.chatId,
+                     docId: input.docId,
+                     doc: {
+                        userId: ctx.user.id,
+                     },
+                  },
+                  data: {
+                     messages: [
+                        ...messages,
+                        {
+                           role: "assistant",
+                           content: text,
+                        },
+                     ],
+                  },
+               });
+            },
          });
 
          const stream = createStreamableValue(result.textStream);
