@@ -3,8 +3,7 @@ import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import TurndownService from "turndown";
 import Replicate from "replicate";
-
-
+import { exa } from "./exa-ai";
 
 /**
  * Retrieves the audio URL for a given YouTube video URL.
@@ -148,7 +147,6 @@ export const parseWebPage = async (url: URL): Promise<parseWebPageResponse> => {
    };
 };
 
-
 export const embedTexts = async (texts: string[]) => {
    const replicate = new Replicate({
       auth: process.env.REPLICATE_API_TOKEN,
@@ -165,4 +163,15 @@ export const embedTexts = async (texts: string[]) => {
    return output.map((item) => {
       return item.embedding;
    });
+};
+
+export const getSearchResults = async (query: string) => {
+   const { results } = await exa.searchAndContents(query, {
+      type: "auto",
+      useAutoprompt: true,
+      numResults: 5,
+      text: true,
+   });
+
+   return results;
 };

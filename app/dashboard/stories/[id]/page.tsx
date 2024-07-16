@@ -9,11 +9,31 @@ import {
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import Chat from "./_components/chat";
-import { AI } from "@/server/actions/AI/ai";
+import { AI, UIState } from "@/server/actions/AI/ai";
+import { db } from "@/lib/db";
+import { auth } from "@clerk/nextjs/server";
+import { notFound } from "next/navigation";
+import Badge from "@/components/tailus-ui/badge";
 
-interface DashboardPageProps {}
+interface StoryDetailsPageProps {
+   params: {
+      id: string;
+   };
+}
 
-const DashboardPage = (p: DashboardPageProps) => {
+const StoryDetailsPage = async (p: StoryDetailsPageProps) => {
+   const { userId } = auth();
+   if (!userId)
+      return auth().redirectToSignIn({ returnBackUrl: "/dashboard/stories" });
+
+   const story = await db.story.findUnique({
+      where: {
+         id: p.params.id,
+         userId,
+      },
+   });
+
+   if (!story) return notFound();
    return (
       <PageWrapper
          title={
@@ -33,7 +53,7 @@ const DashboardPage = (p: DashboardPageProps) => {
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
                      <BreadcrumbPage className="line-clamp-1">
-                        The Hidden Cost of Digital Convenience 💰
+                        {story.title}
                      </BreadcrumbPage>
                   </BreadcrumbItem>
                </BreadcrumbList>
@@ -42,11 +62,12 @@ const DashboardPage = (p: DashboardPageProps) => {
       >
          <div className="h-full min-h-[calc(100dvh-80px)] divide-y p-6">
             <div className="flex items-center justify-between pb-6">
-               <h1 className="text-2xl font-semibold">Stories</h1>
-               <div>{/* <AddDocumentSheet /> */}</div>
+               <h1 className="text-2xl font-semibold">Story</h1>
             </div>
             <div className="relative h-[calc(100dvh-180px)] w-full py-6">
-               <AI>
+               <AI initialUIState={[{
+
+               }] as UIState}>
                   <Chat />
                </AI>
             </div>
@@ -55,4 +76,4 @@ const DashboardPage = (p: DashboardPageProps) => {
    );
 };
 
-export default DashboardPage;
+export default StoryDetailsPage;
