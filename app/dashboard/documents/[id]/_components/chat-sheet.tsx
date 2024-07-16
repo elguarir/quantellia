@@ -182,6 +182,7 @@ const ChatSheet = (p: ChatSheetProps) => {
                   ref={scrollRef}
                   className="h-[calc(100%-128px)] w-full overflow-y-auto border-t px-6 pb-6 pt-4"
                >
+                  {/* @ts-ignore */}
                   <div className="w-full divide-y" ref={messagesRef}>
                      {messages.map((message, index) => (
                         <div className="py-6 first:pt-4" key={index}>
