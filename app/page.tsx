@@ -303,12 +303,12 @@ const ShowcaseImage: React.FC = () => (
          </div>
          <img
             className="aspect-[4/3] rounded-[calc(var(--card-radius)-5px)] border dark:hidden"
-            src="/images/showcase/card.png"
+            src="/img.png"
             alt=""
          />
          <img
             className="hidden aspect-[4/3] rounded-[calc(var(--card-radius)-5px)] border dark:block"
-            src="/images/showcase/card-layout-dark.webp"
+            src="/img.png"
             alt=""
          />
       </div>

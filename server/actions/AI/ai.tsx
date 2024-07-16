@@ -19,8 +19,7 @@ import { z } from "zod";
 //    If the user wants to do anything else, it is an impossible task, so you should respond that you are a demo and cannot do that.
 
 //    Besides getting prices of cryptocurrencies, you can also chat with users.
-const systemMessage = `
-
+            const systemMessage = `
                         You're a helpful writing buddy, your job is to assist the user in writing their story.
                        - a story is can be a blog post, a book, a script, or any other form of writing.
                        - you can help the user with research, summaries, and more.
