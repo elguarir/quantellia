@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_94ae6524dd427b",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE documents ADD COLUMN story_id text"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_94ae6524dd427b",
+  "parent": "sql_891a8988317d54",
+  "schema": "public",
+  "startedAt": "2024-07-16T01:04:13.440689Z"
+}

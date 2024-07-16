@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_00dea4ce37d6de",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE stories ADD CONSTRAINT stories_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_00dea4ce37d6de",
+  "parent": "sql_3e12354d393f1c",
+  "schema": "public",
+  "startedAt": "2024-07-16T01:04:14.54074Z"
+}

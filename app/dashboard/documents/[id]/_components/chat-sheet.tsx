@@ -36,6 +36,7 @@ import { readStreamableValue } from "ai/rsc";
 import { toast } from "sonner";
 import { useScrollAnchor } from "@/hooks/use-scroll-anchor";
 import { ToggleIcon, ToggleRoot } from "@/components/tailus-ui/toogle";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 // Force the page to be dynamic and allow streaming responses up to 30 seconds
 export const dynamic = "force-dynamic";
@@ -55,7 +56,12 @@ const ChatSheet = (p: ChatSheetProps) => {
    const router = useRouter();
    const [isOpen, setOpen] = useState(false);
    const [messages, setMessages] = useState<CoreMessage[]>(p.initialMessages);
-   const [snterToSubmit, setEnterToSubmit] = useState(false);
+   // const [enterToSubmit, setEnterToSubmit] = useState(false);
+   // const [value, setValue, removeValue] = useLocalStorage('test-key', 0)
+   const [enterToSubmit, setEnterToSubmit] = useLocalStorage(
+      "enterToSubmit",
+      false,
+   );
 
    const { messagesRef, scrollRef, visibilityRef, scrollToBottom } =
       useScrollAnchor();
@@ -81,6 +87,7 @@ const ChatSheet = (p: ChatSheetProps) => {
       if (!p.chatId) {
          return;
       }
+
       form.reset({ message: "" });
 
       const newMessages: CoreMessage[] = [
@@ -210,7 +217,7 @@ const ChatSheet = (p: ChatSheetProps) => {
                                           {...field}
                                           onKeyDown={(e) => {
                                              if (
-                                                snterToSubmit &&
+                                                enterToSubmit &&
                                                 e.key === "Enter"
                                              ) {
                                                 form.handleSubmit(onSubmit)();
@@ -227,6 +234,9 @@ const ChatSheet = (p: ChatSheetProps) => {
                                     <Tooltip.Trigger type="button">
                                        <Button.Root
                                           type="button"
+                                          size="sm"
+                                          variant="soft"
+                                          intent="gray"
                                           onClick={() => {
                                              toast.promise(
                                                 clear({
@@ -290,7 +300,7 @@ const ChatSheet = (p: ChatSheetProps) => {
                                           aria-label="Toggle bold"
                                           size="sm"
                                           className="w-fit whitespace-nowrap px-2"
-                                          pressed={snterToSubmit}
+                                          pressed={enterToSubmit}
                                           onPressedChange={setEnterToSubmit}
                                        >
                                           <ToggleIcon>

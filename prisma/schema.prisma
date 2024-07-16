@@ -13,24 +13,46 @@ generator json {
 }
 
 model User {
-  id             String          @id
-  firstName      String?         @map("first_name")
-  lastName       String?         @map("last_name")
-  avatar         String
-  email          String          @unique
-  xata_id        String          @unique(map: "users__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
-  xata_version   Int             @default(0)
-  xata_createdat DateTime        @default(now()) @db.Timestamptz(6)
-  xata_updatedat DateTime        @default(now()) @db.Timestamptz(6)
-  documents      Document[]
-  notifications  Notifications[]
+  id            String          @id
+  firstName     String?         @map("first_name")
+  lastName      String?         @map("last_name")
+  avatar        String
+  email         String          @unique
+  stories       Story[]
+  documents     Document[]
+  notifications Notifications[]
+
+  xata_id        String   @unique(map: "users__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int      @default(0)
+  xata_createdat DateTime @default(now()) @db.Timestamptz(6)
+  xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
 
   @@map("users")
+}
+
+model Story {
+  id             String  @id @default(dbgenerated("('story_'::text || (xata_private.xid())::text)"))
+  userId         String  @map("user_id")
+  title          String
+  readyToStart   Boolean @default(false) @map("ready_to_start")
+  initialContext String?
+  description    String?
+
+  documents Document[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  xata_id        String   @unique(map: "story__pgroll_new_xata_id_key") @default(dbgenerated("('rec_'::text || (xata_private.xid())::text)"))
+  xata_version   Int      @default(0)
+  xata_createdat DateTime @default(now()) @db.Timestamptz(6)
+  xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("stories")
 }
 
 model Document {
   id         String           @id @default(dbgenerated("('doc_'::text || (xata_private.xid())::text)"))
   userId     String           @map("user_id")
+  storyId    String?          @map("story_id")
   type       DocumentType
   status     ProcessingStatus @default(PENDING)
   archivedAt DateTime?        @map("archived_at")
@@ -46,6 +68,7 @@ model Document {
   xata_version   Int      @default(0)
   xata_createdat DateTime @default(now()) @db.Timestamptz(6)
   xata_updatedat DateTime @default(now()) @db.Timestamptz(6)
+  story          Story?   @relation(fields: [storyId], references: [id])
 
   @@map("documents")
 }

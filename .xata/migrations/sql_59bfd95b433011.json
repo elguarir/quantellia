@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_59bfd95b433011",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE stories ADD COLUMN ready_to_start boolean NOT NULL DEFAULT false"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_59bfd95b433011",
+  "parent": "sql_bfb1147c01b1c7",
+  "schema": "public",
+  "startedAt": "2024-07-16T01:46:18.00336Z"
+}

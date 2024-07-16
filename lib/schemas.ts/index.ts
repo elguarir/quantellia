@@ -36,3 +36,15 @@ export const uploadFileSchema = z.object({
       .regex(/^application\/pdf$/, { message: "Only PDF files are allowed." }),
    docId: z.string().optional(),
 });
+
+export const sendMessageSchema = z.object({
+   message: z.string().min(1, { message: "Message is required" }),
+});
+
+export const newStorySchema = z.object({
+   title: z.string().min(1, { message: "Title is required" }),
+   description: z.string().optional(),
+   searchForContext: z.boolean().optional().default(true),
+   from: z.date().optional(),
+   to: z.date().optional(),
+});

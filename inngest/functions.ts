@@ -9,6 +9,7 @@ import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { getXataClient } from "@/lib/xata";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { Document } from "langchain/document";
+import { exa } from "@/lib/exa-ai";
 
 export const processVideo = inngest.createFunction(
    { id: "process-video" },
@@ -454,6 +455,78 @@ export const completeFileProcessing = inngest.createFunction(
             count: records.length,
          };
       });
+   },
+);
+
+export const getInitialStoryContext = inngest.createFunction(
+   { id: "get-initial-story-context" },
+   { event: "story.getInitialContext" },
+   async ({ event, step, db }) => {
+      const story = await db.story.findUnique({
+         where: {
+            id: event.data.storyId,
+         },
+         select: {
+            id: true,
+            title: true,
+         },
+      });
+
+      if (!story) {
+         throw new Error("Story not found");
+      }
+
+      const initialContext = await step.run(
+         "search-the-web-for-context",
+         async () => {
+            const { results } = await exa.searchAndContents(event.data.title, {
+               type: "auto",
+               useAutoprompt: true,
+               numResults: 5,
+               text: true,
+               highlights: {
+                  highlightsPerUrl: 4,
+                  numSentences: 3,
+               },
+            });
+
+            const formmatedResults = results.map((result, idx) => {
+               return `
+            - result: ${idx + 1}
+            - title: ${result.title}
+            - url: ${result.url}
+            - author: ${result.author}
+            - summary: ${result.text}
+            - text: ${result.text}
+            - highlights: ${result.highlights.map((highlight) => {
+               return `- ${highlight}\n`;
+            })}
+            `;
+            });
+
+            return `
+         initial context for the user's story: ${event.data.title}, this is the top search results on google.
+         ${formmatedResults.join("\n")}
+         `;
+         },
+      );
+
+      const result = await step.run("update-story-context", async () => {
+         return await db.story.update({
+            where: {
+               id: story.id,
+            },
+            data: {
+               initialContext: initialContext,
+               readyToStart: true,
+            },
+         });
+      });
+
+      return {
+         success: true,
+         result,
+      };
    },
 );
 

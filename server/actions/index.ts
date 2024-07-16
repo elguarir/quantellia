@@ -1,6 +1,10 @@
 "use server";
 
-import { addYoutubeVideoSchema, uploadFileSchema } from "@/lib/schemas.ts";
+import {
+   addYoutubeVideoSchema,
+   newStorySchema,
+   uploadFileSchema,
+} from "@/lib/schemas.ts";
 import { authedProcedure } from "./procedures";
 import { embedTexts, getYoutubeVideoDetails } from "@/lib/helpers";
 import { formatBytes, getIdFromVideoLink } from "@/lib/utils";
@@ -461,6 +465,45 @@ export const updateChatMessages = authedProcedure
          success: true,
          messages,
       };
+   });
+
+export const createNewStoryAction = authedProcedure
+   .createServerAction()
+   .input(newStorySchema)
+   .handler(async ({ input, ctx }) => {
+      try {
+         const story = await db.story.create({
+            data: {
+               title: input.title,
+               description: input.description,
+               readyToStart: input.searchForContext ? false : true,
+               user: {
+                  connect: {
+                     id: ctx.user.id,
+                  },
+               },
+            },
+         });
+
+         if(input.searchForContext) {
+            await inngest.send({
+               name: "story.getInitialContext",
+               data: {
+                  title: story.title,
+                  storyId: story.id,
+                  from: input.from,
+                  to: input.to,
+               },
+            });
+         }
+
+         return {
+            success: true,
+            story,
+         };
+      } catch (error) {
+         throw new Error("Failed to create story");
+      }
    });
 
 // utils

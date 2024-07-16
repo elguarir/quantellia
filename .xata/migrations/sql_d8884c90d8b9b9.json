@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_d8884c90d8b9b9",
+    "operations": [
+      {
+        "sql": {
+          "up": "CREATE TABLE stories (id text NOT NULL DEFAULT 'story_'::text || xata_private.xid()::text, user_id text NOT NULL, title text NOT NULL, description text, xata_id text NOT NULL DEFAULT 'rec_'::text || xata_private.xid()::text, xata_version int NOT NULL DEFAULT 0, xata_createdat timestamptz(6) NOT NULL DEFAULT current_timestamp, xata_updatedat timestamptz(6) NOT NULL DEFAULT current_timestamp, CONSTRAINT stories_pkey PRIMARY KEY (id))"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_d8884c90d8b9b9",
+  "parent": "sql_94ae6524dd427b",
+  "schema": "public",
+  "startedAt": "2024-07-16T01:04:13.939882Z"
+}

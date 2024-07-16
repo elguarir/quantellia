@@ -1,6 +1,6 @@
 import React from "react";
 import { Slot } from "@radix-ui/react-slot";
-import { cloneElement } from "@/lib/utils";
+import { cloneElement, cn } from "@/lib/utils";
 import {
    button,
    buttonIcon as icon,
@@ -74,11 +74,13 @@ export const Root = React.forwardRef<HTMLButtonElement, ButtonProps>(
       return (
          <Component
             ref={forwardedRef}
-            className={button[variant as keyof typeof button]({
-               intent,
-               [buttonSize]: size,
-               className,
-            })}
+            className={cn(
+               button[variant as keyof typeof button]({
+                  intent,
+                  [buttonSize]: size,
+                  className,
+               }),
+            )}
             {...props}
          >
             {children}

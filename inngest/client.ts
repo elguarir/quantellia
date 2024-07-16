@@ -46,7 +46,7 @@ type TranscriptionCompleted = {
       request_id: string;
       text: string;
       confidence: number;
-      paragraphs: Paragraph[]
+      paragraphs: Paragraph[];
    };
 };
 
@@ -63,6 +63,14 @@ type generateTranscriptEmbeddings = {
    data: {
       text: string;
       request_id: string;
+   };
+};
+type getInitialStoryContext = {
+   data: {
+      storyId: string;
+      title: string;
+      from?: Date;
+      to?: Date;
    };
 };
 
@@ -91,6 +99,7 @@ type Events = {
    "transcription.complete": TranscriptionCompleted;
    "transcript.generateSummary": generateTranscriptSummary;
    "transcript.generateEmbeddings": generateTranscriptEmbeddings;
+   "story.getInitialContext": getInitialStoryContext;
 };
 
 // Create a client to send and receive events

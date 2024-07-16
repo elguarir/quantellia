@@ -88,6 +88,14 @@ const tables = [
           "'PENDING'::bb_dor669beud5g71j79dvj8og28g_ag8fco.\"ProcessingStatus\"",
       },
       {
+        name: "story_id",
+        type: "link",
+        link: { table: "stories" },
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
         name: "type",
         type: 'bb_dor669beud5g71j79dvj8og28g_ag8fco."DocumentType"',
         notNull: true,
@@ -162,6 +170,82 @@ const tables = [
         notNull: true,
         unique: false,
         defaultValue: null,
+      },
+      {
+        name: "title",
+        type: "text",
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "user_id",
+        type: "link",
+        link: { table: "users" },
+        notNull: true,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "xata_createdat",
+        type: "timestamp(6) with time zone",
+        notNull: true,
+        unique: false,
+        defaultValue: "CURRENT_TIMESTAMP",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "xata_updatedat",
+        type: "timestamp(6) with time zone",
+        notNull: true,
+        unique: false,
+        defaultValue: "CURRENT_TIMESTAMP",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+      },
+    ],
+  },
+  {
+    name: "stories",
+    columns: [
+      {
+        name: "description",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('story_'::text || (xata_private.xid())::text)",
+      },
+      {
+        name: "initialContext",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+      },
+      {
+        name: "ready_to_start",
+        type: "bool",
+        notNull: true,
+        unique: false,
+        defaultValue: "false",
       },
       {
         name: "title",
@@ -685,6 +769,9 @@ export type DocumentsRecord = Documents & XataRecord;
 export type Notifications = InferredTypes["notifications"];
 export type NotificationsRecord = Notifications & XataRecord;
 
+export type Stories = InferredTypes["stories"];
+export type StoriesRecord = Stories & XataRecord;
+
 export type Transcripts = InferredTypes["transcripts"];
 export type TranscriptsRecord = Transcripts & XataRecord;
 
@@ -707,6 +794,7 @@ export type DatabaseSchema = {
   chats: ChatsRecord;
   documents: DocumentsRecord;
   notifications: NotificationsRecord;
+  stories: StoriesRecord;
   transcripts: TranscriptsRecord;
   uploaded_files: UploadedFilesRecord;
   users: UsersRecord;

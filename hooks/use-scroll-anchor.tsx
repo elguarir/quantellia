@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export const useScrollAnchor = () => {
-   const messagesRef = useRef<HTMLDivElement>(null);
+   const messagesRef = useRef<HTMLDivElement | HTMLUListElement>(null);
    const scrollRef = useRef<HTMLDivElement>(null);
    const visibilityRef = useRef<HTMLDivElement>(null);
 

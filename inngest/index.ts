@@ -4,6 +4,7 @@ import {
    processFile,
    completeFileProcessing,
    generateTranscriptEmbeddings,
+   getInitialStoryContext
 } from "./functions";
 
 export const functions = [
@@ -12,6 +13,7 @@ export const functions = [
    processFile,
    completeFileProcessing,
    generateTranscriptEmbeddings,
+   getInitialStoryContext
 ];
 
 export { inngest } from "./client";

@@ -1,0 +1,18 @@
+{
+  "done": true,
+  "migration": {
+    "name": "sql_bfb1147c01b1c7",
+    "operations": [
+      {
+        "sql": {
+          "up": "ALTER TABLE stories ADD COLUMN \"initialContext\" text"
+        }
+      }
+    ]
+  },
+  "migrationType": "inferred",
+  "name": "sql_bfb1147c01b1c7",
+  "parent": "sql_4b63497746a4ae",
+  "schema": "public",
+  "startedAt": "2024-07-16T01:44:32.429015Z"
+}
