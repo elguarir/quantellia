@@ -294,7 +294,7 @@ const ShowcaseImage: React.FC = () => (
             </div>
             <div
                data-rounded="large"
-               className="relative flex h-6 w-56 items-center justify-center gap-4 rounded-[--card-radius] bg-gray-200/50 px-3 text-xs text-[--caption-text-color] dark:bg-[--ui-bg]"
+               className="relative flex h-6 w-fit max-w-full items-center justify-center gap-4 rounded-[--card-radius] bg-gray-200/50 px-3 text-xs text-[--caption-text-color] dark:bg-[--ui-bg]"
             >
                <Lock className="absolute left-3 size-2.5" />
                quantellia.net
@@ -302,12 +302,12 @@ const ShowcaseImage: React.FC = () => (
             <Plus aria-hidden className="size-4 text-[--caption-text-color]" />
          </div>
          <img
-            className="aspect-[4/3] rounded-[calc(var(--card-radius)-5px)] border dark:hidden"
+            className="aspect-video object-contain rounded-[calc(var(--card-radius)-5px)] border dark:hidden"
             src="/img.png"
             alt=""
          />
          <img
-            className="hidden aspect-[4/3] rounded-[calc(var(--card-radius)-5px)] border dark:block"
+            className="hidden aspect-video object-contain rounded-[calc(var(--card-radius)-5px)] border dark:block"
             src="/img.png"
             alt=""
          />
