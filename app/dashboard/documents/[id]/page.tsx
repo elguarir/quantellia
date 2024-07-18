@@ -158,7 +158,7 @@ const DashboardPage = async (p: DashboardPageProps) => {
                               <Markdown content={doc.file?.summary ?? ""} />
                            )}
 
-                           {(!doc.youtubeVideo?.transcript?.summary ||
+                           {(!doc.youtubeVideo?.transcript?.summary &&
                               !doc.file?.summary) && (
                               <Caption>
                                  No summary available for this document.
